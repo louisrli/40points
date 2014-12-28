@@ -7,7 +7,7 @@ object Suit extends Enumeration {
   val Joker = Value("Joker")
 
   def getStandardSuits : ValueSet = 
-    "TODO(louisli)"
+    Suit.values - Joker
 
   def toAbbreviation(v : Value) : String = {
     v match {

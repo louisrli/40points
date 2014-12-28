@@ -11,9 +11,14 @@ class Card(val rank: Rank.Value, val suit: Suit.Value) {
 
   override def toString = rank.toString + Suit.toAbbreviation(suit).toLowerCase
 
-  override def equals(other: Any) : Boolean =
+  override def equals(other: Any) : Boolean = {
     other match {
       case other: Card => other.rank == this.rank && other.suit == this.suit
       case _ => false
     }
+  }
+}
+
+object Card {
+  def apply(rank: Rank.Value, suit: Suit.Value) = new Card(rank, suit)
 }

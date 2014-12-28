@@ -16,6 +16,6 @@ object Rank extends Enumeration {
   val LittleJoker = Value(14, "Little Joker")
   val BigJoker = Value(15, "Big Joker")
 
-  def getStandardRanks : ValueSet = "TODO(louisli)"
+  def getStandardRanks : ValueSet = Rank.values - (LittleJoker, BigJoker)
 }
 
