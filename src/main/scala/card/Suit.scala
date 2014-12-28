@@ -1,3 +1,5 @@
+package com.louis.fortypoints.card
+
 object Suit extends Enumeration {
   type Suit = Value
   val Heart = Value("Heart")

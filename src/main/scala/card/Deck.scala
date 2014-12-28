@@ -1,3 +1,5 @@
+package com.louis.fortypoints.card
+
 import scala.util.Random
 
 /**
@@ -67,7 +69,7 @@ object Deck {
   /**
    * Generate an unshuffled custom deck of cards from a list of cards.
    */
-  def getCustomDeck(cards : List[Card]) = new Deck(cards)
+  def getCustomDeck(cards : List[Card]) : Deck = new Deck(cards)
 
   private def generateStandardCards : List[Card] = {
     (for {

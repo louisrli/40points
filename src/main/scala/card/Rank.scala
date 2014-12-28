@@ -1,3 +1,5 @@
+package com.louis.fortypoints.card
+
 object Rank extends Enumeration {
   type Rank = Value
   val Ace = Value(1, "A")
