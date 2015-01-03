@@ -17,6 +17,16 @@ class Deck protected (cards: List[Card]) {
   def shuffle : Deck = Deck.getCustomDeck(Random.shuffle(cards))
 
   /**
+   * Draw a card from the top of the deck and return the card and the remaining deck.
+   */
+  def draw : (Card, Deck) = {
+    if (!this.isEmpty)
+      (this.cards.head, Deck.getCustomDeck(this.cards.tail))
+    else
+      throw new DeckException("Tried to draw from an empty deck")
+  }
+
+  /**
    * Divide the deck into numHands hands of size handSize, shuffling the deck first
    * Returns the hands and the remaining deck 
    *

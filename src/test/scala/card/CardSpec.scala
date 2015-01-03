@@ -9,6 +9,7 @@ class CardSpec extends UnitSpec {
   private val diamond = Card(Rank.Ace, Suit.Diamond)
   private val club = Card(Rank.Ace, Suit.Club)
   private val joker = Card(Rank.BigJoker, Suit.Joker)
+  private val littleJoker = Card(Rank.LittleJoker, Suit.Joker)
 
   "A Card" should "have helper functions to determine its suit" in {
     spade should be a 'spade
@@ -43,6 +44,14 @@ class CardSpec extends UnitSpec {
     spade should not equal (diamond)
   }
 
+  it should "allow instantiation from abbreviations" in {
+    Card("Little Joker") should equal (littleJoker)
+    Card("Big Joker") should equal (joker)
+    Card("Kh") should equal (Card(Rank.King, Suit.Heart))
+    Card("9c") should equal (Card(Rank.Nine, Suit.Club))
+    an [IllegalArgumentException] should be thrownBy Card("foofoo")
+  }
+
   "The Rank enum" should "give access to the thirteen standard ranks" in {
     val ranks = Rank.getStandardRanks
     ranks.size should equal (13)
@@ -54,6 +63,16 @@ class CardSpec extends UnitSpec {
     val suits = Suit.getStandardSuits
     suits.size should equal (4)
     suits should not contain (Suit.Joker)
+  }
+
+  it should "allow instantiation from abbreviations" in {
+    Suit.fromAbbreviation('H') should equal (Suit.Heart)
+    Suit.fromAbbreviation('h') should equal (Suit.Heart)
+    Suit.fromAbbreviation('S') should equal (Suit.Spade)
+    Suit.fromAbbreviation('D') should equal (Suit.Diamond)
+    Suit.fromAbbreviation('C') should equal (Suit.Club)
+    Suit.fromAbbreviation('J') should equal (Suit.Joker)
+    an [IllegalArgumentException] should be thrownBy Suit.fromAbbreviation('X')
   }
 }
 

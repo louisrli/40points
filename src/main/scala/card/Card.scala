@@ -14,7 +14,9 @@ class Card(val rank: Rank.Value, val suit: Suit.Value) {
   def isBlack = (isSpade || isClub)
 
 
-  override def toString = rank.toString + Suit.toAbbreviation(suit).toLowerCase
+  override def toString : String = {
+    rank.toString + Suit.toAbbreviation(suit).toLowerCase
+  }
 
   override def equals(other: Any) : Boolean = {
     other match {
@@ -25,5 +27,26 @@ class Card(val rank: Rank.Value, val suit: Suit.Value) {
 }
 
 object Card {
+  final val BigJoker = new Card(Rank.BigJoker, Suit.Joker)
+  final val LittleJoker = new Card(Rank.LittleJoker, Suit.Joker)
+
   def apply(rank: Rank.Value, suit: Suit.Value) = new Card(rank, suit)
+
+  /**
+   * Converts a string abbreviation "Kh" to the corresponding card
+   */
+  def apply(s: String) = {
+    val littleJoker = Rank.LittleJoker.toString
+    val bigJoker = Rank.BigJoker.toString
+    s match {
+      case `littleJoker` => new Card(Rank.LittleJoker, Suit.Joker)
+      case `bigJoker` => new Card(Rank.BigJoker, Suit.Joker)
+      case _ =>
+        require(s.length == 2, "Instantiating card from an invalid abbreviation: " + s)
+        new Card(Rank.withName(s(0).toString), Suit.fromAbbreviation(s(1)))
+
+    }
+  }
+
+
 }

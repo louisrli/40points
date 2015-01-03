@@ -31,6 +31,17 @@ class DeckSpec extends UnitSpec {
     rest.size should equal (0)
   }
 
+  it should "allow for drawing the top card of a deck" in {
+    val deck = Deck.getStandardDeck
+    val (card, rest) = deck.draw
+    rest.size should be (deck.size - 1)
+  }
+
+  it should "throw an exception when drawing from an empty deck" in {
+    val deck = Deck.getEmptyDeck
+    a [DeckException] should be thrownBy deck.draw
+  }
+
   it should "throw an exception when trying to deal more cards than the deck" in {
     val deck = Deck.getStandardDeck
     a [DeckException] should be thrownBy deck.dealHands(5, 13)
