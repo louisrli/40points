@@ -3,15 +3,15 @@ package com.louis.fortypoints.card
 class Card(val rank: Rank.Value, val suit: Suit.Value) {
 
   // TODO(louisli): throw an exception or somehow disallow Joker + facecard
-  def isSpade = (suit == Suit.Spade)
-  def isDiamond = (suit == Suit.Diamond)
-  def isHeart = (suit == Suit.Heart)
-  def isClub = (suit == Suit.Club)
-  def isJoker = (suit == Suit.Joker) || (rank == Rank.LittleJoker) || 
+  def isSpade: Boolean = (suit == Suit.Spade)
+  def isDiamond: Boolean = (suit == Suit.Diamond)
+  def isHeart: Boolean = (suit == Suit.Heart)
+  def isClub: Boolean = (suit == Suit.Club)
+  def isJoker: Boolean = (suit == Suit.Joker) || (rank == Rank.LittleJoker) ||
     (rank == Rank.BigJoker) 
 
-  def isRed = (isHeart || isDiamond)
-  def isBlack = (isSpade || isClub)
+  def isRed: Boolean = (isHeart || isDiamond)
+  def isBlack: Boolean = (isSpade || isClub)
 
 
   override def toString : String = {
@@ -30,12 +30,12 @@ object Card {
   final val BigJoker = new Card(Rank.BigJoker, Suit.Joker)
   final val LittleJoker = new Card(Rank.LittleJoker, Suit.Joker)
 
-  def apply(rank: Rank.Value, suit: Suit.Value) = new Card(rank, suit)
+  def apply(rank: Rank.Value, suit: Suit.Value): Card = new Card(rank, suit)
 
   /**
    * Converts a string abbreviation "Kh" to the corresponding card
    */
-  def apply(s: String) = {
+  def apply(s: String): Card = {
     val littleJoker = Rank.LittleJoker.toString
     val bigJoker = Rank.BigJoker.toString
     s match {

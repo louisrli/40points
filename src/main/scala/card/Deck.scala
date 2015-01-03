@@ -39,9 +39,10 @@ class Deck protected (cards: List[Card]) {
     val hands = shuffled.grouped(handSize).toList
     if (numDealt == this.size)
       (hands, Deck.getEmptyDeck)
-    else if (numDealt < this.size)
+    else if (numDealt < this.size) {
       (hands.take(numHands), 
        Deck.getCustomDeck(hands takeRight(hands.size - numHands) flatten))
+    }
     else
       throw new DeckException("Tried to deal more cards than there were in the deck.")
   }

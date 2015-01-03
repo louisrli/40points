@@ -64,18 +64,18 @@ case class GameState(
   /**
    * Returns the player with the current turn
    */
-  def currentPlayer = {
+  def currentPlayer: Player = {
     this.players(this.currentTurn)
   }
 
-  def updatePlayer(i: Int, p: Player) = {
+  def updatePlayer(i: Int, p: Player): GameState = {
     this.copy(players = this.players.updated(i, p))
   }
 
   /**
    * Clear the current plays of all the players, i.e. after the round has ended
    */
-  def clearPlays = {
+  def clearPlays: GameState = {
     this.copy(
       players = this.players map { _.copy(currentPlay = None) })
   }
