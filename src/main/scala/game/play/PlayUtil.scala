@@ -14,7 +14,7 @@ class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
    * Validate whether the first play of a round is legal
    *
    * @param play The current play
-   * @return None if the play is legal, 
+   * @return None if the play is legal,
    *         otherwise a [[com.louis.fortypoints.game.play.PlayValidationError]] 
    *         with a description of the error.
    */
