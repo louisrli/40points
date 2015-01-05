@@ -1,6 +1,6 @@
 package com.louis.fortypoints.card
 
-class Card(val rank: Rank.Value, val suit: Suit.Value) {
+case class Card(rank: Rank.Value, suit: Suit.Value) {
 
   // TODO(louisli): throw an exception or somehow disallow Joker + facecard
   def isSpade: Boolean = (suit == Suit.Spade)
@@ -13,27 +13,17 @@ class Card(val rank: Rank.Value, val suit: Suit.Value) {
   def isRed: Boolean = (isHeart || isDiamond)
   def isBlack: Boolean = (isSpade || isClub)
 
-
   override def toString : String = {
     if (suit == Suit.Joker)
       rank.toString
     else
       rank.toString + Suit.toAbbreviation(suit).toLowerCase
   }
-
-  override def equals(other: Any) : Boolean = {
-    other match {
-      case other: Card => other.rank == this.rank && other.suit == this.suit
-      case _ => false
-    }
-  }
 }
 
 object Card {
   final val BigJoker = new Card(Rank.BigJoker, Suit.Joker)
   final val LittleJoker = new Card(Rank.LittleJoker, Suit.Joker)
-
-  def apply(rank: Rank.Value, suit: Suit.Value): Card = new Card(rank, suit)
 
   /**
    * Converts a string abbreviation "Kh" to the corresponding card
