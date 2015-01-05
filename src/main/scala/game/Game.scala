@@ -14,8 +14,8 @@ object GameLoop {
    * Case class representing different game modes
    */
   sealed trait GameMode
-  case class RequestInput
-  case class ContinueGame
+  case object RequestInput extends GameMode
+  case object ContinueGame extends GameMode
 
   def update(state: GameState, cmd: Command) : GameState = {
     (state.phase, cmd) match {
