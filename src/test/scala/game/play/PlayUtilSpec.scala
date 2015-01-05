@@ -15,12 +15,12 @@ class PlayUtilSpec extends UnitSpec with BeforeAndAfter {
   }
 
   "isTrump" should "return true for a card of trump suit" in {
-    for (v <- Rank.values)
+    for (v <- Rank.getStandardRanks)
       playUtil.isTrump(Card(v, trumpSuit)) shouldBe true
   }
 
   it should "return true for a card of trump rank" in {
-    for (v <- Suit.values)
+    for (v <- Suit.getStandardSuits)
       playUtil.isTrump(Card(trumpRank, v)) shouldBe true
   }
 

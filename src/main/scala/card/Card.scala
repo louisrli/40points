@@ -2,7 +2,10 @@ package com.louis.fortypoints.card
 
 case class Card(rank: Rank.Value, suit: Suit.Value) {
 
-  // TODO(louisli): throw an exception or somehow disallow Joker + facecard
+  // Disallow illegal joker combinations (e.g. rank is joker, but suit is diamond)
+  require(if (suit == Suit.Joker) rank == Rank.BigJoker || rank == Rank.LittleJoker else true)
+  require(if (rank == Rank.BigJoker || rank == Rank.LittleJoker) suit == Suit.Joker else true)
+
   def isSpade: Boolean = (suit == Suit.Spade)
   def isDiamond: Boolean = (suit == Suit.Diamond)
   def isHeart: Boolean = (suit == Suit.Heart)

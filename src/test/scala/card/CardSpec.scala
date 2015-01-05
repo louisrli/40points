@@ -52,6 +52,11 @@ class CardSpec extends UnitSpec {
     an [IllegalArgumentException] should be thrownBy Card("foofoo")
   }
 
+  it should "disallow illegal joker combinations" in {
+    an [IllegalArgumentException] should be thrownBy Card(Rank.BigJoker, Suit.Heart)
+    an [IllegalArgumentException] should be thrownBy Card(Rank.King, Suit.Joker)
+  }
+
   "The Rank enum" should "give access to the thirteen standard ranks" in {
     val ranks = Rank.getStandardRanks
     ranks.size should equal (13)

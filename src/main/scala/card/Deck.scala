@@ -8,9 +8,6 @@ import scala.util.Random
  * Can be instantiated with a DeckFactory
  */
 case class Deck protected (val cards: List[Card]) {
-  // TODO(louisli): Consider a "protected deck" option where you can or can't print the 
-  // contents of cards. Useful for debugging
-  
   /**
    * Returns a shuffled version of this deck -- same cards, different order.
    */
