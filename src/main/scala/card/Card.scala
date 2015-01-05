@@ -15,7 +15,10 @@ class Card(val rank: Rank.Value, val suit: Suit.Value) {
 
 
   override def toString : String = {
-    rank.toString + Suit.toAbbreviation(suit).toLowerCase
+    if (suit == Suit.Joker)
+      rank.toString
+    else
+      rank.toString + Suit.toAbbreviation(suit).toLowerCase
   }
 
   override def equals(other: Any) : Boolean = {

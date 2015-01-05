@@ -7,6 +7,7 @@ sealed trait Command
 case class SetTrump(player: Int, cards: List[Card]) extends Command
 case class HouseFilterBottomCards(player: Int, cards: List[Card]) extends Command
 case class MakePlay(player: Int, cards: List[Card]) extends Command
+case object ExitCommand extends Command
 case object BlankCommand extends Command
 
 sealed trait CommandError
@@ -31,16 +32,23 @@ object Command {
    * Infer the appropriate command based on the current game phase
    */
   def parseCommand(raw: String, state: GameState): Either[CommandError, Command] = {
-    parseCards(raw) match {
-      case Success(cards) => {
-        state.phase match {
-          case HandDrawing => Right(SetTrump(state.currentTurn, cards))
-          case HouseBottomFilter => Right(HouseFilterBottomCards(state.currentTurn, cards))
-          case RoundFirstTurn | RoundOtherTurn => Right(MakePlay(state.currentTurn, cards))
-          case _ => Left(CommandInvalidPhase(state.phase))
+    raw match {
+      case "" => Right(BlankCommand)
+      case "exit" => Right(ExitCommand)
+      case _ => {
+        // Assume the string is a list of cards
+        parseCards(raw) match {
+          case Success(cards) => {
+            state.phase match {
+              case HandDrawing => Right(SetTrump(state.currentTurn, cards))
+              case HouseBottomFilter => Right(HouseFilterBottomCards(state.currentTurn, cards))
+              case RoundFirstTurn | RoundOtherTurn => Right(MakePlay(state.currentTurn, cards))
+              case _ => Left(CommandInvalidPhase(state.phase))
+            }
+          }
+          case Failure(e) => Left(CommandException(e))
         }
       }
-      case Failure(e) => Left(CommandException(e))
     }
   }
 }
