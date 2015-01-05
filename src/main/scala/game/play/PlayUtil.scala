@@ -177,7 +177,7 @@ object PlayUtil {
     cards.size match {
       case 1 => Single(cards.head)
       // TODO(louisli): Support other types of hands
-      case _ => throw new RuntimeException("unimplemented")
+      case _ => ???
     }
   }
 }
