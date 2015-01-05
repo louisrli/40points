@@ -27,7 +27,7 @@ object Main {
           eitherCmd <- getCommandM(raw) 
           _ <- eitherCmd match {
             case Left(cmdError) => 
-              putStrLnM("There was an error: " + cmdError.toString)
+              putStrLnM("There was an error: \n" + cmdError.toString)
             // Process user input, updating the state
             case Right(cmd) => for {
               newState <- updateM(cmd)
