@@ -1,6 +1,7 @@
 package com.louis.fortypoints.game
 
 import com.louis.fortypoints.game.console.ConsoleUtil
+import com.louis.fortypoints.game.command._
 
 import scalaz.effect.IO
 import scalaz.{StateT}
@@ -34,7 +35,7 @@ object MonadUtil {
    */
   def getCommandM(raw: String): Game[Either[CommandError, Command]] = {
     liftState[Either[CommandError, Command]] { (s: GameState) =>
-      (s, Command.parseCommand(raw, s))
+      (s, ConsoleUtil.parseCommand(raw, s))
     }
   }
 

@@ -1,8 +1,13 @@
 package com.louis.fortypoints.game.console
 
 import com.louis.fortypoints.game._
+import com.louis.fortypoints.game.command._
+import com.louis.fortypoints.card.Card
+
+import scala.util.{Try, Success, Failure}
+
 /**
- * Utility functions for the console version of the game.
+ * Functions for the console version of the game.
  */
 object ConsoleUtil {
   /**
@@ -23,4 +28,43 @@ object ConsoleUtil {
       case GameEnd => "Game end"
     }
   }
+
+  /**
+   * Parse a semicolon separated list of strings into cards
+   *
+   * e.g. "Ah; Ax; Big Joker; Td"
+   *
+   * @return A list of cards, otherwise an exception result if one of the
+   *         strings is an invalid card abbreviation
+   */
+  private def parseCards(line: String) : Try[List[Card]] = {
+    Try(
+      line.trim.split(";").toList map { _.trim } map { Card(_) })
+  }
+
+  /**
+   * Infer the appropriate command from the command line
+   * based on the current game phase
+   */
+  def parseCommand(raw: String, state: GameState): Either[CommandError, Command] = {
+    raw match {
+      case "" => Right(BlankCommand)
+      case "exit" => Right(ExitCommand)
+      case _ => {
+        // Assume the string is a list of cards
+        parseCards(raw) match {
+          case Success(cards) => {
+            state.phase match {
+              case HandDrawing => Right(SetTrump(state.currentTurn, cards))
+              case HouseBottomFilter => Right(HouseFilterBottomCards(state.currentTurn, cards))
+              case RoundFirstTurn | RoundOtherTurn => Right(MakePlay(state.currentTurn, cards))
+              case _ => Left(CommandInvalidPhase(state.phase))
+            }
+          }
+          case Failure(e) => Left(CommandException(e))
+        }
+      }
+    }
+  }
+
 }
