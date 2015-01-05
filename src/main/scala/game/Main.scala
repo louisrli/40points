@@ -5,7 +5,6 @@ import com.louis.fortypoints.card._
 import scalaz.effect.IO
 import com.louis.fortypoints.game.MonadUtil._
 
-
 /**
  * Entry point for the console version of the game.
  */
