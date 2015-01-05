@@ -2,6 +2,7 @@ package com.louis.fortypoints.game
 
 import com.louis.fortypoints.card._
 
+
 import scalaz.effect.IO
 
 
@@ -16,13 +17,13 @@ object Main {
 
   def updateM(cmd: Command): Game[GameState] = {
     liftState[GameState] { (s: GameState) =>
-      val newState = GameLoop.update(s, cmd)
+      val newState = FortyPointsGame.update(s, cmd)
       (newState, newState)
     }
   }
 
-  def getGameModeM : Game[GameLoop.GameMode] = {
-    liftState[GameLoop.GameMode] { (s: GameState) => (s, GameLoop.getGameMode(s.phase)) }
+  def getInputModeM : Game[InputMode] = {
+    liftState[InputMode] { (s: GameState) => (s, InputMode.getInputMode(s.phase)) }
   }
 
   def putStrM(s: String): Game[Unit] = liftIO(IO.putStr(s))
@@ -53,12 +54,12 @@ object Main {
   }
 
   def mainLoop: Game[Unit] = for {
-    gameMode <- getGameModeM
+    gameMode <- getInputModeM
     prePhaseDisplay <- getPrePhaseDisplayM
     _ <- putStrLnM(prePhaseDisplay)
     // Only request user input if this game mode needs user input
     _ <- gameMode match {
-      case GameLoop.RequestInput(prompt) => {
+      case RequestInput(prompt) => {
         for {
           // Request and validate user input
           _ <- putStrM(prompt + ": ")
@@ -75,7 +76,7 @@ object Main {
           }
         } yield Unit
       } 
-      case GameLoop.ContinueGame => for {
+      case NoInput => for {
         newState <- updateM(BlankCommand)
       } yield Unit
     }

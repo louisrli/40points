@@ -3,11 +3,10 @@ package com.louis.fortypoints.game
 import com.louis.fortypoints.card._
 
 /**
- *
+ * An object for the progression of the forty points card game,
+ * containing functions for the manipulation of the game state.
  */
-// TODO rename
-object GameLoop {
-
+object FortyPointsGame {
   // TODO(louisli): Refactor this to use the COMMAND PATTERN
   // without matching on command
   def update(state: GameState, cmd: Command) : GameState = {
@@ -83,32 +82,6 @@ object GameLoop {
         state
       case (_, _) => ???
     }
-  }
-
-  /**
-   * Case class representing different game modes
-   * TODO(louisli): document
-   * TODO(louisli): think of a better name?
-   */
-  sealed trait GameMode
-  case class RequestInput(prompt: String) extends GameMode
-  case object ContinueGame extends GameMode
-
-  /**
-   * Map game phases to game mode based on whether we need to request user
-   * input at the beginning of the game mode
-   * TODO(louisli): document
-   */
-  def getGameMode: GamePhase => (GameMode) = {
-      case HouseSelection => ContinueGame
-      case HandDrawing => ContinueGame
-      case HandSelectTrump => RequestInput("Set the trump (optional)")
-      case HouseBottomFilter => RequestInput("Select the cards to put on the bottom")
-      case HouseCallCards => ContinueGame
-      case RoundFirstTurn | RoundOtherTurn => RequestInput("Select cards to play")
-      case RoundEnd => ContinueGame
-      case CountPoints => ContinueGame
-      case GameEnd => ContinueGame
   }
 
 }
