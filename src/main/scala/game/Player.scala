@@ -18,11 +18,15 @@ case class Player(
   points: List[Card],
   currentPlay: Option[Play]) {
 
+  def this() = {
+    this(List(), List(), None)
+  }
+
   /**
    * Returns a new Player with an added card in the hand
    */
-  def addHandCard(card : Card) : Player = {
-    this.copy(hand = card :: this.hand)
+  def addHandCard(card: Card): Player = {
+    this.copy(hand = card:: this.hand)
   }
 
   /**
@@ -30,7 +34,7 @@ case class Player(
    *
    * Throws an exception if the card parameter is not a point card.
    */
-  def addPointCard(card : Card) : Player = {
+  def addPointCard(card: Card): Player = {
     require(PointUtil.isPoint(card))
     this.copy(points = card :: this.points)
   }
@@ -38,9 +42,7 @@ case class Player(
   /**
    * Sums the total points for a player
    */
-  def tallyPoints : Int = {
+  def tallyPoints: Int = {
     this.points.foldLeft(0)(_ + PointUtil.pointValue(_))
   }
-
-
 }

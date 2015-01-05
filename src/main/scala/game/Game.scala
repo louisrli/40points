@@ -5,21 +5,32 @@ import com.louis.fortypoints.card._
 /**
  *
  */
-class Game {
+// TODO rename
+object GameLoop {
 
-  def play(state: GameState) : GameState = {
-    val nextState = state.phase match {
+  // TODO(louisli): return a boolean for whether we need input
+
+  /**
+   * Case class representing different game modes
+   */
+  sealed trait GameMode
+  case class RequestInput
+  case class ContinueGame
+
+  def update(state: GameState, cmd: Command) : GameState = {
+    (state.phase, cmd) match {
       /* Prologue */
-      case HouseSelection() =>
+      case (HouseSelection, _) => {
         // TODO(louisli): implement a method for house selection
-        state.copy(house = Some(0))
-      case HandDrawing() =>
+        state.copy(house = Some(0), phase = HandDrawing)
+      }
+      case (HandDrawing, _) => {
         /* 1. Check if no more cards need to be drawn
          * 2. Otherwise, let the current player draw a card 
          * 3. While drawing, players can play trumps (TODO) */
         val NumBottomCards = 0 // TODO(louisli): calculate the correct number of bottom cards
         if (state.deck.size == NumBottomCards)
-          state.copy(phase = HouseBottomFilter())
+          state.copy(phase = HouseBottomFilter)
         else {
           // Draw a card for the current player, then update the game phase
           val (card, rest) = state.deck.draw
@@ -29,7 +40,8 @@ class Game {
             .nextTurn
             .copy(deck = rest)
         }
-      case HouseBottomFilter() =>
+      }
+      case (HouseBottomFilter, _) => {
         /* 1. [User input] allow the house to swap bottom cards
          * with cards in his deck */
         // TODO(louisli)
@@ -37,48 +49,40 @@ class Game {
         state.house match {
           case Some(house) =>
             // TODO(louisli) implement swapping routine
-            state.copy(currentTurn = house, phase = RoundFirstTurn())
+            state.copy(currentTurn = house, phase = RoundFirstTurn)
           case None =>
-            state.copy(currentTurn = 0, phase = RoundFirstTurn())
+            state.copy(currentTurn = 0, phase = RoundFirstTurn)
         }
-      case HouseCallCards() =>
+      }
+      case (HouseCallCards, _) =>
         /* 1. [User input] house can select cards to call */
         state
       /* Rounds */
-      case RoundFirstTurn() =>
+      case (RoundFirstTurn, _) =>
         /* 1. [User input] player makes a play
          * 2. Check if the card is a called card
          * 3. Set the rules on what subsequent cards can be played */
         state
-      case RoundOtherTurn() =>
+      case (RoundOtherTurn, _) =>
         /* 1. [User input] player makes a play
          * 2. Validate play _based on the user's hand_ 
          *  (e.g. if he has a pair, he must play it)
          * 3. Check if the card is a called card */
         state
-      case RoundEnd() =>
+      case (RoundEnd, _) =>
         /* 1. Gather the players plays and determine the winner
          * 2. Give any point cards to the winning player
          * 3. Clear hands */
         state.clearPlays
       /* Epilogue */
-      case CountPoints() =>
+      case (CountPoints, _) =>
         val oppPoints = PointUtil.tallyTeamPoints(state.teamOpp)
         state.copy(
           houseWon = Some(oppPoints > state.pointThreshold),
-          phase = GameEnd())
-      case GameEnd() =>
+          phase = GameEnd)
+      case (GameEnd, _) =>
         /* IDK. Notify people that we done. */
         state
     }
-
-    if (state.phase == GameEnd())
-      state
-    else
-      play(nextState)
   }
-}
-
-object Game {
-
 }

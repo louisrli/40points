@@ -6,17 +6,17 @@ package com.louis.fortypoints.game
 sealed trait GamePhase
 
 /* Prologue */
-case class HouseSelection() extends GamePhase
-case class HandDrawing() extends GamePhase
-case class HouseBottomFilter() extends GamePhase
-case class HouseCallCards() extends GamePhase
+case object HouseSelection extends GamePhase
+case object HandDrawing extends GamePhase
+case object HouseBottomFilter extends GamePhase
+case object HouseCallCards extends GamePhase
 
 /* Rounds -- (turn-based playing) */
-case class RoundFirstTurn() extends GamePhase
-case class RoundOtherTurn() extends GamePhase
-case class RoundEnd() extends GamePhase
+case object RoundFirstTurn extends GamePhase
+case object RoundOtherTurn extends GamePhase
+case object RoundEnd extends GamePhase
 
 /* Epilogue */
-case class CountPoints() extends GamePhase
-case class GameEnd() extends GamePhase
+case object CountPoints extends GamePhase
+case object GameEnd extends GamePhase
 
