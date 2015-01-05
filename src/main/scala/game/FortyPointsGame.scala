@@ -35,19 +35,50 @@ object FortyPointsGame {
         }
       }
       case (HandSelectTrump, BlankCommand) => {
-        /* 1. [User input] let the user select a trump, otherwise continue */
        state.nextTurn.copy(phase = HandDrawing)
       }
-      case (HouseBottomFilter, _) => {
+      case (HandSelectTrump, SetTrump(player, cards)) => {
+        /* 1. [User input] let the user select a trump, otherwise continue */
+       // Check if trump is already set
+       // TODO(louisli) [multicard] let trump override
+       // TODO need some type of indicator that it worked
+       // TODO check that cards is equal to 1. if it's not, they should _be able to try again_
+       // TODO validate that player is equal to current player
+       state.trumpSuit match {
+         case None if cards.size == 1 => 
+           state.nextTurn.copy(trumpSuit = Some(cards.head.suit), phase = HandDrawing)
+         case None if cards.size != 1 => state // let them try again
+         case Some(suit) => state.nextTurn.copy(phase = HandDrawing)
+       }
+      }
+      case (HouseBottomFilter, HouseFilterBottomCards(player, bottom)) => {
         /* 1. [User input] allow the house to swap bottom cards
          * with cards in his deck */
         // TODO(louisli)
-        // For now, just pretend they can't swap bottom cards
         state.house match {
-          case Some(house) =>
-            // TODO(louisli) implement swapping routine
-            state.copy(currentTurn = house, phase = RoundFirstTurn)
-          case None =>
+          case Some(house) => {
+            require (house == player)  // TODO real error handling...ignore otherwise, log debug
+            if (bottom.size == FortyPointsGame.numBottomCards) {
+              // Check that all the cards are either in the bottom or in his hand
+              val valid = bottom forall { 
+                (c) => state.deck.cards.contains(c) && state.players(house).hand.contains(c) 
+              }
+
+              if (valid) {
+                 // swap the cards
+                 // TODO(louisli) where u left off
+                 state
+              }
+              else {
+                // return an error, asking only to specify valid cards
+                state
+              }
+            } 
+            else {
+              state  // TODO(louisli) error message, let them try again
+            }
+          }
+          case None =>  // TODO(louisli) This case should really never happen
             state.copy(currentTurn = 0, phase = RoundFirstTurn)
         }
       }
@@ -84,4 +115,15 @@ object FortyPointsGame {
     }
   }
 
+
+  /**
+   * Calculate the number of bottom cards from the number of players
+   * and the number of decks.
+   */
+  private def numBottomCards: Int = {
+    4  // TODO(louisli): Placeholder for now
+  }
+  private def numBottomCards(numPlayers: Int, numDecks: Int): Int = {
+    4  // TODO(louisli)
+  }
 }
