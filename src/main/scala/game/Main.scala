@@ -2,58 +2,18 @@ package com.louis.fortypoints.game
 
 import com.louis.fortypoints.card._
 
-
 import scalaz.effect.IO
+import com.louis.fortypoints.game.MonadUtil._
 
 
+/**
+ * Entry point for the console version of the game.
+ */
 object Main {
-
-  // TODO move these into some GameUtil
-  def getCommandM(raw: String): Game[Either[CommandError, Command]] = {
-    liftState[Either[CommandError, Command]] { (s: GameState) =>
-      (s, Command.parseCommand(raw, s))
-    }
-  }
-
-  def updateM(cmd: Command): Game[GameState] = {
-    liftState[GameState] { (s: GameState) =>
-      val newState = FortyPointsGame.update(s, cmd)
-      (newState, newState)
-    }
-  }
-
-  def getInputModeM : Game[InputMode] = {
-    liftState[InputMode] { (s: GameState) => (s, InputMode.getInputMode(s.phase)) }
-  }
-
-  def putStrM(s: String): Game[Unit] = liftIO(IO.putStr(s))
-  def putStrLnM(s: String): Game[Unit] = liftIO(IO.putStrLn(s))
-  def readLnM: Game[String] = liftIO(IO.readLn)
-
   /**
-   * Get the instructions displayed before user input on a given phase
+   * Recursively defined main loop for the Game monad
    */
-  def getPrePhaseDisplay(state: GameState): String = {
-    val prettyHand: String = state.currentPlayer.hand map (_.toString) mkString ";"
-    val currentHand = "Your current hand (%d): %s".format(state.currentTurn, prettyHand)
-    state.phase match {
-      case HouseSelection => "[UNIMPLEMENTED] Automatically selecting the house for now..." // TODO(louisli)
-      case HandDrawing => "Drawing a card..."
-      case HandSelectTrump => currentHand
-      case HouseBottomFilter => "Bottom cards: " + state.deck.cards + "\n" + currentHand
-      case HouseCallCards => "[UNIMPLEMENTED] Skipping house call cards for now..." // TODO(louisli)
-      case RoundFirstTurn | RoundOtherTurn => currentHand
-      case RoundEnd => "Ending the round" // TODO(louisli) to print the winner, this should really be after
-      case CountPoints => "[UNIMPLEMENTED] Count points"
-      case GameEnd => "Game end"
-    }
-  }
-
-  def getPrePhaseDisplayM: Game[String] = {
-    liftState[String] { (s: GameState) => (s, getPrePhaseDisplay(s)) }
-  }
-
-  def mainLoop: Game[Unit] = for {
+  private def mainLoop: Game[Unit] = for {
     gameMode <- getInputModeM
     prePhaseDisplay <- getPrePhaseDisplayM
     _ <- putStrLnM(prePhaseDisplay)
@@ -83,11 +43,19 @@ object Main {
     _ <- mainLoop
   } yield Unit
 
+  /**
+   * The game monad
+   */
+  def game: Game[Unit] = mainLoop
+
+  /**
+   * Run the game monad from the given state
+   * @param game Game monad
+   * @param state Initial state
+   */
   def runGame[A](game: Game[A], state: GameState) = {
     game.eval(state).unsafePerformIO()
   }
-
-  def game: Game[Unit] = mainLoop
 
   def main(args: Array[String]) {
     // TODO(louisli) revamp based on config possibly
