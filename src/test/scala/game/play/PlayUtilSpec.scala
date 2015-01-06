@@ -42,7 +42,7 @@ class PlayUtilSpec extends UnitSpec with BeforeAndAfter {
 
   it should "return true for a hand containing multiple trump cards" in {
     playUtil.hasTrump(
-      List(Card("3d"), Card("Little Joker"), Card("Ac"), 
+      List(Card("3d"), Card("Little Joker"), Card("Ac"),
            Card("Ts"), Card("4h"))) shouldBe true
   }
 
@@ -177,14 +177,14 @@ class PlayUtilSpec extends UnitSpec with BeforeAndAfter {
     val p1 = Play.fromAbbrevs("5s")
     // nontrump, diff suit, but has diamond
     playUtil.validateOtherPlay(p1, hasDiamondHand, firstPlay) shouldBe (Some(HasSuitError(Suit.Diamond)))
-    
+
     // nontrump, diff suit, but has no diamond
     playUtil.validateOtherPlay(p1, hasNoDiamondHand, firstPlay) shouldBe (None)
 
     val p2 = Play.fromAbbrevs("Big Joker")
     // trump, but has diamond
     playUtil.validateOtherPlay(p2, hasDiamondHand, firstPlay) shouldBe (Some(HasSuitError(Suit.Diamond)))
-    
+
     // trump, but has no diamond
     playUtil.validateOtherPlay(p2, hasNoDiamondHand, firstPlay) shouldBe None
   }
@@ -198,7 +198,7 @@ class PlayUtilSpec extends UnitSpec with BeforeAndAfter {
     val p1 = Play.fromAbbrevs("5s")
     // nontrump but has trump: error, need to play trump
     playUtil.validateOtherPlay(p1, hasTrumpHand, firstPlay) shouldBe (Some(HasTrumpsError()))
-    
+
     // nontrump but has no trump: ok
     playUtil.validateOtherPlay(p1, hasNoTrumpHand, firstPlay) shouldBe None
 

@@ -1,7 +1,6 @@
-package com.louis.fortypoints.game
+package com.louis.fortypoints.game.command
 
 import com.louis.fortypoints.card._
-import com.louis.fortypoints.game.command._
 import com.louis.fortypoints.game.play._
 
 /**
