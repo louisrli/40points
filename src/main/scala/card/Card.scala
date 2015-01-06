@@ -44,5 +44,12 @@ object Card {
     }
   }
 
+  /**
+   * Take a sequence of card abbreviations and generate a hand
+   */
+  def toHand(abbrevs: String*): List[Card] = {
+    abbrevs.toList map { Card(_) }
+  }
+
 
 }

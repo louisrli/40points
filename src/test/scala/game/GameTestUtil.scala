@@ -17,7 +17,7 @@ object GameTestUtil {
     GameState(
       players = Vector(new Player(), new Player(), new Player(), new Player()), 
       pointThreshold = 10,
-      trumpSuit = None,
+      trumpSuit = Some(Suit.Spade),
       trumpRank = Rank.Two,
       house = None,
       deck = Deck.getStandardDeckJoker,

@@ -48,7 +48,7 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
             case (true, true) => None
             case (true, false) => // must be out of trumps
               if (!hasTrump(hand)) None else Some(HasTrumpsError())
-            case (false, true) | (false, false) => // must be out of first suit
+            case (false, true) | (false, false) => { // must be out of first suit
               val noFirstSuit = !hasNonTrump(hand, firstCard.suit)
               if (noFirstSuit)
                 None 
@@ -56,6 +56,7 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
                 None
               else 
                 Some(HasSuitError(firstCard.suit))
+            }
           }
       }
   }

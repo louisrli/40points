@@ -22,3 +22,9 @@ case class Play(
     "(" + (cards mkString ";") + ")"
   }
 }
+
+object Play {
+  def fromAbbrevs(abbrevs: String*): Play = {
+    new Play(abbrevs.toList map { Card(_) })
+  }
+}

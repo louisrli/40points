@@ -164,10 +164,48 @@ class PlayUtilSpec extends UnitSpec with BeforeAndAfter {
     testSingleWinner(expected = "Big Joker", "Kd", "Big Joker", "2s", "Little Joker")
   }
 
-  "validateOtherPlay" should "validate correctly" in {
-    true shouldBe false
+  "validateOtherPlay" should "validate other rounds with correctly (leading nontrump single)" in {
+    val firstPlay = Play.fromAbbrevs("5d")
+
+    val hasDiamondHand = Card.toHand("8s", "7d", "4d", "Little Joker")
+    val hasNoDiamondHand = Card.toHand("2s", "3c", "4s", "5h")
+
+    // nontrump, same suit (diamond)
+    val p0 = Play.fromAbbrevs("7d")
+    playUtil.validateOtherPlay(p0, hasDiamondHand, firstPlay) shouldBe None
+
+    val p1 = Play.fromAbbrevs("5s")
+    // nontrump, diff suit, but has diamond
+    playUtil.validateOtherPlay(p1, hasDiamondHand, firstPlay) shouldBe (Some(HasSuitError(Suit.Diamond)))
+    
+    // nontrump, diff suit, but has no diamond
+    playUtil.validateOtherPlay(p1, hasNoDiamondHand, firstPlay) shouldBe (None)
+
+    val p2 = Play.fromAbbrevs("Big Joker")
+    // trump, but has diamond
+    playUtil.validateOtherPlay(p2, hasDiamondHand, firstPlay) shouldBe (Some(HasSuitError(Suit.Diamond)))
+    
+    // trump, but has no diamond
+    playUtil.validateOtherPlay(p2, hasNoDiamondHand, firstPlay) shouldBe None
   }
 
+  it should "validate other rounds correctly (leading trump single)" in {
+    val firstPlay = new Play(Card("Big Joker"))
+
+    val hasTrumpHand = Card.toHand("8s", "7h", "4d", "5s")
+    val hasNoTrumpHand = Card.toHand("3c", "4s")
+
+    val p1 = Play.fromAbbrevs("5s")
+    // nontrump but has trump: error, need to play trump
+    playUtil.validateOtherPlay(p1, hasTrumpHand, firstPlay) shouldBe (Some(HasTrumpsError()))
+    
+    // nontrump but has no trump: ok
+    playUtil.validateOtherPlay(p1, hasNoTrumpHand, firstPlay) shouldBe None
+
+    val p2 = Play.fromAbbrevs("Big Joker")
+    // trump and has trump
+    playUtil.validateOtherPlay(p2, hasTrumpHand, firstPlay) shouldBe None
+  }
 
 }
 
