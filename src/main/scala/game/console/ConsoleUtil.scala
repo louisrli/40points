@@ -20,7 +20,7 @@ object ConsoleUtil {
       case HouseSelection => "[UNIMPLEMENTED] Automatically selecting the house for now..." // TODO(louisli)
       case HandDrawing => "Drawing a card..."
       case HandSelectTrump => currentHand
-      case HouseBottomFilter => "Bottom cards: " + state.deck.cards mkString " " + "\n" + currentHand
+      case HouseBottomFilter => "Bottom cards: " + (state.deck.cards mkString " ") + "\n" + currentHand
       case HouseCallCards => "[UNIMPLEMENTED] Skipping house call cards for now..." // TODO(louisli)
       case RoundFirstTurn | RoundOtherTurn => 
         List(currentHand, "Board: " + (state.getPlays mkString " ")) mkString "\n" // TODO(louisli) print prettily

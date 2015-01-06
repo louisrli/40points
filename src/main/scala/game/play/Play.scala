@@ -17,4 +17,8 @@ case class Play(
   def this(cards: Card*) = {
     this(cards.toList, PlayUtil.determineRank(cards.toList))
   }
+
+  override def toString: String = {
+    "(" + (cards mkString ";") + ")"
+  }
 }
