@@ -22,6 +22,10 @@ case class Player(
     this(List(), List(), None)
   }
 
+  def this(hand: Hand) = {
+    this(hand, List(), None)
+  }
+
   /**
    * Returns a new Player with an added card in the hand
    */

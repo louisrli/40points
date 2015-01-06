@@ -85,17 +85,16 @@ case class GameState(
    * Otherwise, returns false (no players have played yet).
    */
   def isRoundStarted: Boolean = {
-    this.players flatMap { _.currentPlay } isEmpty
+    !(this.players flatMap { _.currentPlay } isEmpty)
   }
 
   /**
    * Returns the plays in the order which they were played,
    * which could differ from the order of the players vector.
-   * TODO(louisli): Unit test this
    */
   def getPlaysOrdered: Vector[Play] = {
     val (left, right) = this.players splitAt this.firstPlayer 
-    Vector(left, right) flatMap {
+    Vector(right, left) flatMap {
       _.flatMap { _.currentPlay }
     }
   }
