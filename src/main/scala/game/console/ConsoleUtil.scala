@@ -22,7 +22,8 @@ object ConsoleUtil {
       case HandSelectTrump => currentHand
       case HouseBottomFilter => "Bottom cards: " + state.deck.cards + "\n" + currentHand
       case HouseCallCards => "[UNIMPLEMENTED] Skipping house call cards for now..." // TODO(louisli)
-      case RoundFirstTurn | RoundOtherTurn => currentHand
+      case RoundFirstTurn | RoundOtherTurn => 
+        List(currentHand, "Board: " + state.getPlays.toString) mkString "\n" // TODO(louisli) print prettily
       case RoundEnd => "Ending the round" // TODO(louisli) to print the winner, this should really be after
       case CountPoints => "[UNIMPLEMENTED] Count points"
       case GameEnd => "Game end"

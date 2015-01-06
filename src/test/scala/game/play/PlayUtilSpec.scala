@@ -164,6 +164,10 @@ class PlayUtilSpec extends UnitSpec with BeforeAndAfter {
     testSingleWinner(expected = "Big Joker", "Kd", "Big Joker", "2s", "Little Joker")
   }
 
+  "validateOtherPlay" should "validate correctly" in {
+    true shouldBe false
+  }
+
 
 }
 

@@ -34,6 +34,15 @@ case class Player(
   }
 
   /**
+   * Returns a new player with a removed card from the hand
+   *
+   * If the hand does not contain the card, it does nothing
+   */
+  def removeHandCards(cards: List[Card]): Player = {
+    this.copy(hand = this.hand diff cards)
+  }
+
+  /**
    * Returns a new Player with the added point card
    *
    * Throws an exception if the card parameter is not a point card.

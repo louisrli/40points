@@ -30,7 +30,6 @@ object Main {
                 putStrLnM("[ERROR] " + CommandErrorStatus.getMessage(error))
           _ <- putStrM(prompt + ": ")
           raw <- readLnM
-          _ <- putStrLnM(raw)
           eitherCmd <- getCommandM(raw) 
           _ <- eitherCmd match {
             case Left(cmdError) => 
@@ -46,6 +45,7 @@ object Main {
         newState <- updateM(BlankCommand)
       } yield Unit
     }
+    _ <- putStrLnM("")
     _ <- mainLoop
   } yield Unit
 

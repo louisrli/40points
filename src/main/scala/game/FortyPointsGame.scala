@@ -2,6 +2,7 @@ package com.louis.fortypoints.game
 
 import com.louis.fortypoints.card._
 import com.louis.fortypoints.game.command._
+import com.louis.fortypoints.game.play._
 
 /**
  * An object for the progression of the forty points card game,
@@ -63,11 +64,21 @@ object FortyPointsGame {
          *  (e.g. if he has a pair, he must play it)
          * 3. Check if the card is a called card */
         cmd.exec(state)
-      case (RoundEnd, _) =>
+      case (RoundEnd, _) => {
         /* 1. Gather the players plays and determine the winner
          * 2. Give any point cards to the winning player
          * 3. Clear hands */
-        state.clearPlays
+        val pu = new PlayUtil(state.trumpRank, state.trumpSuit.get)
+        require(state.getPlays.size == state.players.size)  // TODO(legit check)
+        // TODO: should check that all people have the same number of cards
+        val winningPlay = pu.determineWinner(state.getPlays flatMap { (s) => s } toList)
+        val winner = state.getPlaysFlat.indexOf(winningPlay)
+        // TODO should check that this is never -1
+        if (state.currentPlayer.hand.size > 0)
+          state.clearPlays.copy(currentTurn = winner, phase = RoundFirstTurn)
+        else
+          state.copy(phase = CountPoints)
+      }
       /* Epilogue */
       case (CountPoints, _) =>
         val oppPoints = PointUtil.tallyTeamPoints(state.teamOpp)

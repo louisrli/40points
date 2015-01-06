@@ -89,6 +89,20 @@ case class GameState(
   }
 
   /**
+   * Returns the play (options) for the players
+   */
+  def getPlays: Vector[Option[Play]] = {
+    this.players map { _.currentPlay }
+  }
+
+  /**
+   * Returns the plays (with Nones removed) for the players
+   */
+  def getPlaysFlat: Vector[Play] = {
+    this.players flatMap { _.currentPlay }
+  }
+
+  /**
    * Returns the plays in the order which they were played,
    * which could differ from the order of the players vector.
    */

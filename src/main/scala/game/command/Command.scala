@@ -78,43 +78,52 @@ case class MakePlay(player: Int, cards: List[Card]) extends Command {
   override def exec(state: GameState): GameState = {
     // Check that the player actually has the input cards
     val hasCards = cards forall { state.currentPlayer.hand contains _ }
+    val isFirstPlay = !state.isRoundStarted
     if (player != state.currentTurn)
       state.copy(error = CommandInvalidPlayer)
     else if (!hasCards) {
       state.copy(error = CommandPlayInvalidCards(cards diff state.currentPlayer.hand))
     }
-    else if (!state.isRoundStarted)
-      execFirstPlay(state)
-    else
-      execOtherPlay(state)
+    else 
+      execPlay(state, isFirstPlay)
+  }
+
+  /**
+   * Using the first player of the round and the number of players,
+   * get the index of the last player of the round.
+   */
+  private def getLastPlayer(s: GameState): Int = {
+    (s.firstPlayer + (s.players.size - 1)) % s.players.size
   }
 
   /**
    * Handle validating and executing the first play of a round
    */
-  private def execFirstPlay(state: GameState): GameState = {
-    // TODO(louisli) instantiating a playUtil is too hard...
+  private def execPlay(state: GameState, isFirstPlay: Boolean): GameState = {
     state.trumpSuit match {
       case Some(suit) => {
         val pu = PlayUtil(state.trumpRank, suit)
         val play = new Play(cards)
-        pu.validateFirstPlay(play) match {
-          case None => state.setPlay(player, play)
-          case Some(pve) => state.copy(error = CommandPlayError(pve))
-        }
-        state.copy(firstPlayer = state.currentTurn)
-      }
-      case None => state.copy(error = CommandInvalidConfig) 
-    }
-  }
+        // Process the resulting state differently based on whether this is the leading play
+        val validate = 
+          if (isFirstPlay) 
+            pu.validateFirstPlay(play) 
+          else 
+            pu.validateOtherPlay(play, state.currentPlayer.hand, state.getPlaysOrdered.head)
 
-  private def execOtherPlay(state: GameState): GameState = {
-    state.trumpSuit match {
-      case Some(suit) => {
-        val pu = PlayUtil(state.trumpRank, suit)
-        val play = new Play(cards)
-        pu.validateOtherPlay(play, state.currentPlayer.hand, state.getPlaysOrdered.head) match {
-          case None => state.setPlay(player, play)
+        validate match {
+          case None =>  {
+            val newState = state
+              .updatePlayer(player, state.currentPlayer.removeHandCards(cards))
+              .setPlay(player, play)
+
+            if (isFirstPlay)
+              newState.copy(firstPlayer = newState.currentTurn).nextTurn
+            else if (newState.currentTurn == getLastPlayer(newState))
+              newState.copy(phase = RoundEnd)
+            else
+              newState.nextTurn
+          }
           case Some(pve) => state.copy(error = CommandPlayError(pve))
         }
       }
