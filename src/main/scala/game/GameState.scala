@@ -1,6 +1,8 @@
 package com.louis.fortypoints.game
 
 import com.louis.fortypoints.card._
+import com.louis.fortypoints.game.play._
+import com.louis.fortypoints.game.command._
 
 /**
  * Immutable class representing the current state of the game.
@@ -43,6 +45,7 @@ case class GameState(
   deck: Deck,
 
   /* Properties determined as game progresses */
+  firstPlayer: Int,
   currentTurn: Int,
   phase: GamePhase,
 
@@ -50,7 +53,9 @@ case class GameState(
   pendingCalledCards: List[Card],
   teamHouse: Team,
   teamOpp: Team,
-  houseWon: Option[Boolean]
+  houseWon: Option[Boolean],
+
+  error: CommandErrorStatus
 ) {
   /**
    * Returns a new game state with the current turn updated for
@@ -60,16 +65,39 @@ case class GameState(
     this.copy(currentTurn = (currentTurn + 1) % players.size)
   }
 
-
   /**
    * Returns the player with the current turn
    */
   def currentPlayer: Player = {
     this.players(this.currentTurn)
   }
-
+  
   def updatePlayer(i: Int, p: Player): GameState = {
     this.copy(players = this.players.updated(i, p))
+  }
+
+  def setPlay(i: Int, p: Play): GameState = {
+    this.updatePlayer(i, this.players(i).setPlay(p))
+  }
+
+  /**
+   * Returns true if at least one play has been played so far this round.
+   * Otherwise, returns false (no players have played yet).
+   */
+  def isRoundStarted: Boolean = {
+    this.players flatMap { _.currentPlay } isEmpty
+  }
+
+  /**
+   * Returns the plays in the order which they were played,
+   * which could differ from the order of the players vector.
+   * TODO(louisli): Unit test this
+   */
+  def getPlaysOrdered: Vector[Play] = {
+    val (left, right) = this.players splitAt this.firstPlayer 
+    Vector(left, right) flatMap {
+      _.flatMap { _.currentPlay }
+    }
   }
 
   /**

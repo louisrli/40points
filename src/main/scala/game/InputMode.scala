@@ -18,7 +18,8 @@ object InputMode {
   def getInputMode: GamePhase => (InputMode) = {
       case HouseSelection => NoInput
       case HandDrawing => NoInput
-      case HandSelectTrump => RequestInput("Set the trump (optional)")
+      case HandSelectTrump => NoInput // RequestInput("Set the trump (optional)")
+      // TODO(louisli) change back
       case HouseBottomFilter => RequestInput("Select the cards to put on the bottom")
       case HouseCallCards => NoInput
       case RoundFirstTurn | RoundOtherTurn => RequestInput("Select cards to play")

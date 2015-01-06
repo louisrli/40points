@@ -9,7 +9,7 @@ import com.louis.fortypoints.game._
  * These functions determine things such as the type of hand (single, pair, etc.)
  * being played, winners of rounds, etc.
  */
-class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
+case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
   /**
    * Validate whether the first play of a round is legal
    *

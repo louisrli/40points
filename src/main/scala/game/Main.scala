@@ -4,6 +4,7 @@ import com.louis.fortypoints.card._
 
 import scalaz.effect.IO
 import com.louis.fortypoints.game.MonadUtil._
+import com.louis.fortypoints.game.command._
 
 /**
  * Entry point for the console version of the game.
@@ -20,7 +21,13 @@ object Main {
     _ <- gameMode match {
       case RequestInput(prompt) => {
         for {
+          // Print out an error if there was one
           // Request and validate user input
+          error <- getErrorM
+          _ <- if (error == CommandNoError) 
+                unitM 
+              else 
+                putStrLnM("[ERROR] " + CommandErrorStatus.getMessage(error))
           _ <- putStrM(prompt + ": ")
           raw <- readLnM
           _ <- putStrLnM(raw)
@@ -61,16 +68,18 @@ object Main {
     val initialState: GameState = GameState(
       players = Vector(new Player(), new Player(), new Player(), new Player()), 
       pointThreshold = 10,
-      trumpSuit = None,
+      trumpSuit = Some(Suit.Spade),
       trumpRank = Rank.Two,
       house = None,
       deck = Deck.getStandardDeckJoker,
+      firstPlayer = 0,
       currentTurn = 0,
       phase = HouseSelection,
       pendingCalledCards = List(),
       teamHouse = List(),
       teamOpp = List(),
-      houseWon = None)
+      houseWon = None,
+      error = CommandNoError)
     
     runGame(game, initialState)
   }

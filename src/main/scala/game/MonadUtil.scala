@@ -33,8 +33,8 @@ object MonadUtil {
   /**
    * Lifted function for parsing commands in Game monad
    */
-  def getCommandM(raw: String): Game[Either[CommandError, Command]] = {
-    liftState[Either[CommandError, Command]] { (s: GameState) =>
+  def getCommandM(raw: String): Game[Either[CommandErrorStatus, Command]] = {
+    liftState[Either[CommandErrorStatus, Command]] { (s: GameState) =>
       (s, ConsoleUtil.parseCommand(raw, s))
     }
   }
@@ -52,9 +52,18 @@ object MonadUtil {
   /**
    * Lifted function for retrieving the state in Game monad
    */
-  def getInputModeM : Game[InputMode] = {
+  def getInputModeM: Game[InputMode] = {
     liftState[InputMode] { (s: GameState) => (s, InputMode.getInputMode(s.phase)) }
   }
+
+  /**
+   * Lifted function for retrieving the error status in the Game Monad
+   */
+  def getErrorM: Game[CommandErrorStatus] = {
+    liftState[CommandErrorStatus] { (s: GameState) => (s, s.error) }
+  }
+
+  def unitM: Game[Unit] = liftIO(IO.ioUnit)
 
   //
   // Below this line

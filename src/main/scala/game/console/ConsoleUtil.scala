@@ -46,7 +46,7 @@ object ConsoleUtil {
    * Infer the appropriate command from the command line
    * based on the current game phase
    */
-  def parseCommand(raw: String, state: GameState): Either[CommandError, Command] = {
+  def parseCommand(raw: String, state: GameState): Either[CommandErrorStatus, Command] = {
     raw match {
       case "" => Right(BlankCommand)
       case "exit" => Right(ExitCommand)

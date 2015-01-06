@@ -39,6 +39,10 @@ case class Player(
     this.copy(points = card :: this.points)
   }
 
+  def setPlay(p: Play): Player = {
+    this.copy(currentPlay = Some(p))
+  }
+
   /**
    * Sums the total points for a player
    */
