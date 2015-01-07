@@ -2,6 +2,8 @@ package com.louis.fortypoints.game
 
 /**
  * An enumeration of the possible phases of the game.
+ *
+ * TODO(louisli): Possibly put them in the companion object so that we can prefix
  */
 sealed trait GamePhase
 

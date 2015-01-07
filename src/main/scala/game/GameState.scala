@@ -120,4 +120,15 @@ case class GameState(
     this.copy(
       players = this.players map { _.copy(currentPlay = None) })
   }
+
+  /**
+   * Calculate the number of bottom cards for the game
+   *
+   * TODO(multideck): Needs to be revamped for multideck.
+   */
+  def numBottomCards: Int = {
+    // It should be between 0.5 and 1.5 times the number of players
+    val candidate = (54 % players.size)
+    if (candidate > 0.5 * players.size) candidate else candidate + players.size
+  }
 }

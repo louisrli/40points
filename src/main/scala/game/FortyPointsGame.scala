@@ -110,15 +110,4 @@ object FortyPointsGame {
     case MakePlay(p, c) => check(p, state)
     case _ => true
   }
-
-  /**
-   * Calculate the number of bottom cards from the number of players
-   * and the number of decks.
-   */
-  def numBottomCards: Int = {
-    4  // TODO(louisli): Placeholder for now
-  }
-  private def numBottomCards(numPlayers: Int, numDecks: Int): Int = {
-    4  // TODO(louisli)
-  }
 }

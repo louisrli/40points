@@ -1,6 +1,7 @@
 package com.louis.fortypoints.game.command
 
 import com.louis.fortypoints.card._
+import com.louis.fortypoints.game._
 import com.louis.fortypoints.game.play._
 
 /**
@@ -24,7 +25,7 @@ case class SetTrump(player: Int, cards: List[Card]) extends Command {
         // TODO(multicard): support nonsingle cards
         state.copy(error = CommandTrumpWrongArity(cards.size, 1))
       case Some(suit) => 
-        state.nextTurn.copy(error = CommandTrumpAlreadySet)
+        state.copy(error = CommandTrumpAlreadySet)
     }
   }
 }
@@ -42,8 +43,8 @@ case class HouseFilterBottomCards(player: Int, cards: List[Card]) extends Comman
         state.copy(error = CommandInvalidConfig, currentTurn = 0, phase = RoundFirstTurn)
       case Some(house) if house != player => 
         state.copy(error = CommandInvalidPlayer)
-      case Some(house) if cards.size != FortyPointsGame.numBottomCards => 
-        state.copy(error = CommandBottomWrongArity(cards.size, FortyPointsGame.numBottomCards))
+      case Some(house) if cards.size != state.numBottomCards => 
+        state.copy(error = CommandBottomWrongArity(cards.size, state.numBottomCards))
       case Some(house) => {
         // Check that all the cards are either in the bottom or in his hand
         val validCards = cards filter { 
