@@ -39,8 +39,7 @@ object ConsoleUtil {
    *         strings is an invalid card abbreviation
    */
   private def parseCards(line: String) : Try[List[Card]] = {
-    Try(
-      line.trim.split(";").toList map { _.trim } map { Card(_) })
+    Try(line.trim.split(";").toList map { _.trim } map { Card(_) })
   }
 
   /**
