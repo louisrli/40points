@@ -5,11 +5,13 @@ import com.louis.fortypoints.card._
 import scalaz.effect.IO
 import com.louis.fortypoints.game.MonadUtil._
 import com.louis.fortypoints.game.command._
+import com.louis.fortypoints.game.console.ConsoleUtil._
 
 /**
  * Entry point for the console version of the game.
  */
 object Main {
+
   /**
    * Recursively defined main loop for the Game monad
    */
@@ -27,13 +29,13 @@ object Main {
           _ <- if (error == CommandNoError) 
                 unitM 
               else 
-                putStrLnM("[ERROR] " + CommandErrorStatus.getMessage(error))
+                putStrLnM(red("[ERROR] ") + CommandErrorStatus.getMessage(error))
           _ <- putStrM(prompt + ": ")
           raw <- readLnM
           eitherCmd <- getCommandM(raw) 
           _ <- eitherCmd match {
             case Left(cmdError) => 
-              putStrLnM("There was an error: \n" + cmdError.toString)
+              putStrLnM(red("[ERROR] ") + cmdError.toString)
             // Process user input, updating the state
             case Right(cmd) => for {
               newState <- updateM(cmd)

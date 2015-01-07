@@ -44,10 +44,17 @@ object FortyPointsGame {
       case (HandSelectTrump, SetTrump(_, _)) =>
         /* 1. [User input] let the user select a trump, otherwise continue */
        cmd.exec(state)
-      case (HouseBottomFilter, HouseFilterBottomCards(_, _)) =>
+      case (HouseBottomFilter, HouseFilterBottomCards(_, _)) => {
         /* 1. [User input] allow the house to swap bottom cards
          * with cards in his deck */
-        cmd.exec(state)
+        val pu = new PlayUtil(state.trumpRank, state.trumpSuit.get)
+        val filtered = cmd.exec(state)
+
+        // Sort each player's hand
+        filtered.copy(players = filtered.players map { p =>
+          p.copy(hand = pu.sort(p.hand))
+        })
+      }
       case (HouseCallCards, _) =>
         /* 1. [User input] house can select cards to call */
        /* TODO[Unimplemented] until multideck */
@@ -68,9 +75,9 @@ object FortyPointsGame {
         /* 1. Gather the players plays and determine the winner
          * 2. Give any point cards to the winning player
          * 3. Clear hands */
-        val pu = new PlayUtil(state.trumpRank, state.trumpSuit.get)
         require(state.getPlays.size == state.players.size)  // TODO(legit check)
         // TODO: should check that all people have the same number of cards
+        val pu = new PlayUtil(state.trumpRank, state.trumpSuit.get)
         val winningPlay = pu.determineWinner(state.getPlays flatMap { (s) => s } toList)
         val winner = state.getPlaysFlat.indexOf(winningPlay)
         // TODO should check that this is never -1

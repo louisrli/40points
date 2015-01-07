@@ -67,4 +67,11 @@ object ConsoleUtil {
     }
   }
 
+  /**
+   * Make a string red when printed to console
+   */
+  def red(s: String): String = {
+    Console.RED + s + Console.RESET
+  }
+
 }

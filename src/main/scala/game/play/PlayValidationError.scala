@@ -9,8 +9,9 @@ case class HasSuitError(suit: Suit.Value) extends PlayValidationError
 
 object PlayValidationError {
   private def handContainsMsg(s: String): String = {
+    val sl = s.toLowerCase
     "This is a %s round, and your hand contains a %s. You must play a %s"
-      .format(s, s, s)
+      .format(sl, sl, sl)
   }
 
   def getMessage: PlayValidationError => String = {
