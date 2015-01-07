@@ -25,6 +25,18 @@ Please consult the [Wikipedia page](http://en.wikipedia.org/wiki/Sheng_Ji) for t
 Development
 ===========
 
+Packages
+---------
+```
+├── main
+    └── scala
+        ├── card -- self contained playing card library
+        └── game -- core game logic, game and monad utilities
+            ├── command -- handle user input and error statuses via command pattern
+            ├── console -- things for the terminal-version only
+            └── play -- computing things related to hand strengths
+```
+
 Playing the game
 -----------------
 Install [sbt](http://www.scala-sbt.org/) and [Scala](http://scala-lang.org/).
