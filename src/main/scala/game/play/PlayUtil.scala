@@ -19,8 +19,10 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
    *         with a description of the error.
    */
   def validateFirstPlay(play: Play): Option[PlayValidationError] = {
-    // TODO: Do something with trump suit?
-    None
+    play.rank match {
+      case InvalidPlay => Some(InvalidPlayError)
+      case _ => None
+    }
   }
 
   /**
@@ -43,7 +45,7 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
       Some(SizeError(firstPlay.cards.size, play.cards.size))
     else
       (firstPlay.rank, play.rank) match {
-        case (Single(firstCard), Single(currentCard)) =>
+        case (Single(firstCard), Single(currentCard)) => {
           (isTrump(firstCard), isTrump(currentCard)) match {
             case (true, true) => None
             case (true, false) => // must be out of trumps
@@ -58,6 +60,8 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
                 Some(HasSuitError(firstCard.suit))
             }
           }
+        }
+        case (InvalidPlay, _) | (_, InvalidPlay) => Some(InvalidPlayError)
       }
   }
 
@@ -75,7 +79,7 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
    */
   def compareRank(p1: Play, p2: Play, first: Play): Play = {
     (p1.rank, p2.rank, first.rank) match {
-      case (Single(c1), Single(c2), Single(f)) =>
+      case (Single(c1), Single(c2), Single(f)) => {
         // Return the play of higher rank (same suits)
         // p1 if equal (preserves order)
         val maxp = (r1: Rank.Value, r2: Rank.Value) => if (lt(r1, r2)) p2 else p1
@@ -93,19 +97,23 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
               maxp(c1.rank, c2.rank)
           case (true, false) => p1
           case (false, true) => p2
-          case (false, false) => 
+          case (false, false) => {
             // Two non-trumps depend on which one matches first suit
             (c1.suit == f.suit, c2.suit == f.suit) match {
               case (true, true) => maxp(c1.rank, c2.rank)
-              case (false, false) => 
+              case (false, false) => {
                 if (c1.suit == c2.suit)
                   maxp(c1.rank, c2.rank)
                 else
                   p1  // doesn't matter
+              }
               case (true, false) => p1
               case (false, true) => p2
             }
+          }
         }
+      }
+      case (_, _, _) => throw new RuntimeException("Comparing an invalid play")
     }
   }
 
@@ -212,8 +220,7 @@ object PlayUtil {
   def determineRank(cards: List[Card]): PlayRank = {
     cards.size match {
       case 1 => Single(cards.head)
-      // TODO(louisli): Support other types of hands
-      case _ => ???
+      case _ => InvalidPlay // TODO(multicard)
     }
   }
 }
