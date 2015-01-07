@@ -13,19 +13,30 @@ object ConsoleUtil {
   /**
    * Get the instructions displayed before user input on a given phase
    */
+
+  private def mkLines(strings: String*): String = strings filter { !_.isEmpty } mkString "\n"
+
   def getPrePhaseDisplay(state: GameState): String = {
     val prettyHand: String = state.currentPlayer.hand map (_.toString) mkString ";"
-    val currentHand = "Your current hand (%d): %s".format(state.currentTurn, prettyHand)
+    val currentHand = "Your current hand (Player %d): %s".format(state.currentTurn, prettyHand)
+
+    // String for the winner, if applicable
+    val winner = state.roundWinner match {
+      case Some((p, play)) => "The winning hand is %s (Player %d)".format(play, p)
+      case None => ""
+    }
+
     state.phase match {
       case HouseSelection => "[UNIMPLEMENTED] Automatically selecting the house for now..." // TODO(louisli)
       case HandDrawing => "Drawing a card..."
       case HandSelectTrump => currentHand
-      case HouseBottomFilter => "Bottom cards: " + (state.deck.cards mkString " ") + "\n" + currentHand
-      case HouseCallCards => "[UNIMPLEMENTED] Skipping house call cards for now..." // TODO(louisli)
-      case RoundFirstTurn | RoundOtherTurn => 
-        List(currentHand, "Board: " + (state.getPlays mkString " ")) mkString "\n" // TODO(louisli) print prettily
-      case RoundEnd => "Ending the round" // TODO(louisli) to print the winner, this should really be after
-      case CountPoints => "[UNIMPLEMENTED] Count points"
+      case HouseBottomFilter => 
+        mkLines("Bottom cards: " + (state.deck.cards mkString " "), currentHand)
+      case RoundFirstTurn | RoundOtherTurn => {
+        mkLines(currentHand, "Board: " + (state.getPlays mkString " "), winner)
+      }
+      case RoundEnd => "Computing the winner..."
+      case CountPoints => mkLines(winner, "[UNIMPLEMENTED] Count points")
       case GameEnd => "Game end"
     }
   }

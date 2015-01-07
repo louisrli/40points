@@ -12,7 +12,6 @@ case object HouseSelection extends GamePhase
 case object HandDrawing extends GamePhase
 case object HandSelectTrump extends GamePhase
 case object HouseBottomFilter extends GamePhase
-case object HouseCallCards extends GamePhase
 
 /* Rounds -- (turn-based playing) */
 case object RoundFirstTurn extends GamePhase

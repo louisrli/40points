@@ -162,6 +162,12 @@ class PlayUtilSpec extends UnitSpec with BeforeAndAfter {
 
     // non-trump first, multiple trump played
     testSingleWinner(expected = "Big Joker", "Kd", "Big Joker", "2s", "Little Joker")
+
+    // trump suit 2 should be better than other 2s
+    testSingleWinner(expected = "2h", "Kd", "Jd", "2s", "2h")
+
+    // the first 2 should win for non trump-suit 2s
+    testSingleWinner(expected = "2c", "2c", "2d", "2s", "6s")
   }
 
   "validateOtherPlay" should "validate other rounds with correctly (leading nontrump single)" in {

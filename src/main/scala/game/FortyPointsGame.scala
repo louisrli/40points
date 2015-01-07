@@ -12,8 +12,8 @@ object FortyPointsGame {
   // TODO(louisli): Refactor this to use the COMMAND PATTERN
   // without matching on command
   def update(s: GameState, cmd: Command) : GameState = {
-    // Reset error state
-    val state = s.copy(error = CommandNoError)
+    // Reset error state and winner
+    val state = s.copy(error = CommandNoError, roundWinner = None)
     (state.phase, cmd) match {
       /* Misc */
       case (_, ExitCommand) => cmd.exec(state)
@@ -55,10 +55,6 @@ object FortyPointsGame {
           p.copy(hand = pu.sort(p.hand))
         })
       }
-      case (HouseCallCards, _) =>
-        /* 1. [User input] house can select cards to call */
-       /* TODO[Unimplemented] until multideck */
-        state
       /* Rounds */
       case (RoundFirstTurn, MakePlay(_, _)) =>
         /* 1. [User input] player makes a play
@@ -82,9 +78,12 @@ object FortyPointsGame {
         val winner = state.getPlaysFlat.indexOf(winningPlay)
         // TODO should check that this is never -1
         if (state.currentPlayer.hand.size > 0)
-          state.clearPlays.copy(currentTurn = winner, phase = RoundFirstTurn)
+          state.clearPlays.copy(
+            currentTurn = winner, 
+            roundWinner = Some(winner, winningPlay), 
+            phase = RoundFirstTurn)
         else
-          state.copy(phase = CountPoints)
+          state.copy(phase = CountPoints, roundWinner = Some(winner, winningPlay))
       }
       /* Epilogue */
       case (CountPoints, _) =>

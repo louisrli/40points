@@ -24,19 +24,19 @@ object Main {
       case RequestInput(prompt) => {
         for {
           // Print out an error if there was one
-          // Request and validate user input
           error <- getErrorM
           _ <- if (error == CommandNoError) 
                 unitM 
               else 
                 putStrLnM(red("[ERROR] ") + CommandErrorStatus.getMessage(error))
           _ <- putStrM(prompt + ": ")
+
+          // Request and validate user input
           raw <- readLnM
           eitherCmd <- getCommandM(raw) 
           _ <- eitherCmd match {
             case Left(cmdError) => 
               putStrLnM(red("[ERROR] ") + cmdError.toString)
-            // Process user input, updating the state
             case Right(cmd) => for {
               newState <- updateM(cmd)
             } yield Unit

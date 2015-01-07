@@ -21,7 +21,6 @@ object InputMode {
       case HandSelectTrump => NoInput // RequestInput("Set the trump (optional)")
       // TODO(louisli) change back
       case HouseBottomFilter => RequestInput("Select the cards to put on the bottom")
-      case HouseCallCards => NoInput
       case RoundFirstTurn | RoundOtherTurn => RequestInput("Select cards to play")
       case RoundEnd => NoInput
       case CountPoints => NoInput
