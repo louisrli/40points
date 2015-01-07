@@ -46,7 +46,7 @@ object CommandErrorStatus {
     case CommandPlayInvalidCards(invalid) => 
       "Your hand does not contain the cards: %s".format(invalid mkString ";")
     case CommandBottomWrongArity(actual, expected) =>
-      "Please select %d bottom cards (you selected %d)".format(actual, expected)
+      "Please select %d bottom cards (you selected %d)".format(expected, actual)
     case CommandBottomInvalidCards(invalid) =>
       "Your hand does not contain the cards: %s".format(invalid mkString ";")
     case CommandInvalidPlayer =>

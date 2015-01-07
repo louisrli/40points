@@ -8,9 +8,10 @@ case class HasTrumpsError() extends PlayValidationError  // TODO(louisli) refact
 case class HasSuitError(suit: Suit.Value) extends PlayValidationError
 
 object PlayValidationError {
-  private def handContainsMsg(s: String): String =
-    "This is a %s round, and your hand contain a %s. You must play a %s"
+  private def handContainsMsg(s: String): String = {
+    "This is a %s round, and your hand contains a %s. You must play a %s"
       .format(s, s, s)
+  }
 
   def getMessage: PlayValidationError => String = {
     case SizeError(expected, actual) =>

@@ -39,7 +39,7 @@ object Card {
       case `bigJoker` => new Card(Rank.BigJoker, Suit.Joker)
       case _ =>
         require(s.length == 2, "Instantiating card from an invalid abbreviation: " + s)
-        new Card(Rank.withName(s(0).toString), Suit.fromAbbreviation(s(1)))
+        new Card(Rank.withName(s(0).toString.toUpperCase), Suit.fromAbbreviation(s(1)))
 
     }
   }
