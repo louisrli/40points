@@ -37,7 +37,13 @@ object ConsoleUtil {
       }
       case RoundEnd => "Computing the winner..."
       case CountPoints => mkLines(winner, "[UNIMPLEMENTED] Count points")
-      case GameEnd => "Game end"
+      case GameEnd => {
+        val (houseWon, oppPoints) = state.houseWon.get
+        val (winStr, winPlayers) = if (houseWon) ("House", state.teamHouse) else ("Opposition", state.teamOpp)
+        mkLines(
+          "The game has ended. The opposition collected %d/%d points".format(oppPoints, state.pointThreshold), 
+          "%s team won (Players %s)".format(winStr, winPlayers mkString "&"))
+      }
     }
   }
 

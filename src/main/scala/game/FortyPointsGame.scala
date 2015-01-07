@@ -25,7 +25,7 @@ object FortyPointsGame {
       case (HandDrawing, _) => {
         /* 1. Check if no more cards need to be drawn
          * 2. Otherwise, let the current player draw a card 
-         * 3. While drawing, players can play trumps (TODO) */
+         * 3. While drawing, players can play trumps */
         if (state.deck.size == state.numBottomCards)
           state.copy(phase = HouseBottomFilter, currentTurn = state.house)
         else {
@@ -86,15 +86,15 @@ object FortyPointsGame {
       }
       /* Epilogue */
       case (CountPoints, _) =>
-        val oppPoints = PointUtil.tallyTeamPoints(state.players.toList diff state.teamHouse)
+        val oppPoints = PointUtil.tallyTeamPoints(state.teamOpp)
         state.copy(
-          houseWon = Some(oppPoints > state.pointThreshold),
+          houseWon = Some((oppPoints > state.pointThreshold, oppPoints)),
           phase = GameEnd)
       case (GameEnd, _) =>
         /* IDK. Notify people that we done. */
         state
       case (_, BlankCommand) => state
-      case (_, _) => ???
+      case (_, _) => state  // TODO log a warning or something
     }
   }
 

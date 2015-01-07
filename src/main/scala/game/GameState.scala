@@ -31,7 +31,9 @@ import com.louis.fortypoints.game.command._
  * @param teamHouse
  *  List of players on the house team
  * @param houseWon
- *  An option representing whether the house team won. None if the game is not over yet.
+ *  An option (Boolean, Int) representing whether the house team won and the
+ *  number of points that the opposing team had (note that this is always the
+ *  points of the opposing team  None if the game is not over yet.
  *
  * @param error
  *  CommandNoError if the round proceeded without an error. Otherwise, an instance of
@@ -54,7 +56,7 @@ case class GameState(
 
   /* Properties related to teams */
   teamHouse: Team,
-  houseWon: Option[Boolean],
+  houseWon: Option[(Boolean, Int)],
 
   error: CommandErrorStatus
 ) {
@@ -131,5 +133,12 @@ case class GameState(
     // It should be between 0.5 and 1.5 times the number of players
     val candidate = (54 % players.size)
     if (candidate > 0.5 * players.size) candidate else candidate + players.size
+  }
+
+  /**
+   * Get the opposing team (anyone not on the house team)
+   */
+  def teamOpp: Team = {
+    players.toList diff teamHouse
   }
 }
