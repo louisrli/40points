@@ -11,12 +11,12 @@ case class Deck protected (val cards: List[Card]) {
   /**
    * Returns a shuffled version of this deck -- same cards, different order.
    */
-  def shuffle : Deck = Deck.getCustomDeck(Random.shuffle(cards))
+  def shuffle: Deck = Deck.getCustomDeck(Random.shuffle(cards))
 
   /**
    * Draw a card from the top of the deck and return the card and the remaining deck.
    */
-  def draw : (Card, Deck) = {
+  def draw: (Card, Deck) = {
     if (!this.isEmpty)
       (this.cards.head, Deck.getCustomDeck(this.cards.tail))
     else
@@ -30,7 +30,7 @@ case class Deck protected (val cards: List[Card]) {
    * Throws an exception if the number of cards requested is more than
    * the number of cards in the deck
    */
-  def dealHands(handSize: Int, numHands: Int) : (List[List[Card]], Deck) = {
+  def dealHands(handSize: Int, numHands: Int): (List[List[Card]], Deck) = {
     val shuffled = Random.shuffle(cards)
     val numDealt = handSize * numHands
     val hands = shuffled.grouped(handSize).toList
@@ -47,12 +47,12 @@ case class Deck protected (val cards: List[Card]) {
   /**
    * Returns the number of cards in the deck
    */
-  def size : Int = cards.size
+  def size: Int = cards.size
 
   /**
    * Returns true if there are no cards in the deck
    */
-  def isEmpty : Boolean = cards.isEmpty
+  def isEmpty: Boolean = cards.isEmpty
 }
 
 /**
@@ -62,31 +62,31 @@ object Deck {
   /**
    * Generate a shuffled 52-card standard playing card deck.
    */
-  def getStandardDeck : Deck = new Deck(this.generateStandardCards) shuffle
+  def getStandardDeck: Deck = new Deck(this.generateStandardCards) shuffle
 
   /**
    * Generate a shuffled 54-card deck -- the 52-card standard deck with a little joker and big joker.
    */
-  def getStandardDeckJoker : Deck = new Deck(this.generateStandardCardsJokers) shuffle
+  def getStandardDeckJoker: Deck = new Deck(this.generateStandardCardsJokers) shuffle
   
   /**
    * Generate an empty deck
    */
-  def getEmptyDeck : Deck = new Deck(List())
+  def getEmptyDeck: Deck = new Deck(List())
 
   /**
    * Generate an unshuffled custom deck of cards from a list of cards.
    */
-  def getCustomDeck(cards : List[Card]) : Deck = new Deck(cards)
+  def getCustomDeck(cards: List[Card]): Deck = new Deck(cards)
 
-  private def generateStandardCards : List[Card] = {
+  private def generateStandardCards: List[Card] = {
     (for {
       rank <- Rank.getStandardRanks
       suit <- Suit.getStandardSuits
     } yield (Card(rank, suit))) toList
   }
 
-  private def generateStandardCardsJokers : List[Card] = {
-    Card(Rank.LittleJoker, Suit.Joker) :: Card(Rank.BigJoker, Suit.Joker) :: this.generateStandardCards
+  private def generateStandardCardsJokers: List[Card] = {
+    Card(Rank.LittleJoker, Suit.Joker):: Card(Rank.BigJoker, Suit.Joker):: this.generateStandardCards
   }
 }

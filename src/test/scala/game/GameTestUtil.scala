@@ -35,7 +35,7 @@ object GameTestUtil {
    * Game state where all the players have been dealt cards
    */
   val dealtState: GameState = {
-    val (hands, rest) = Deck.getStandardDeckJoker.dealHands(4, 12)
+    val (hands, rest) = Deck.getStandardDeckJoker.dealHands(12, 4)
     blankState.copy(
       players = (hands map { new Player(_) }).to[Vector],
       deck = rest)
