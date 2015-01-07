@@ -26,8 +26,7 @@ object FortyPointsGame {
         /* 1. Check if no more cards need to be drawn
          * 2. Otherwise, let the current player draw a card 
          * 3. While drawing, players can play trumps (TODO) */
-        val NumBottomCards = 4 // TODO(louisli): calculate the correct number of bottom cards
-        if (state.deck.size == NumBottomCards)
+        if (state.deck.size == state.numBottomCards)
           state.copy(phase = HouseBottomFilter, currentTurn = state.house)
         else {
           // Draw a card for the current player, then update the game phase
