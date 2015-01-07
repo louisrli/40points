@@ -69,17 +69,16 @@ object Main {
     // TODO(louisli) revamp based on config possibly
     val initialState: GameState = GameState(
       players = Vector(new Player(), new Player(), new Player(), new Player()), 
-      pointThreshold = 10,
+      pointThreshold = 40,
       trumpSuit = Some(Suit.Spade),
       trumpRank = Rank.Two,
       house = 0,
       deck = Deck.getStandardDeckJoker,
       firstPlayer = 0,
       currentTurn = 0,
+      roundWinner = None,
       phase = HouseSelection,
-      pendingCalledCards = List(),
       teamHouse = List(),
-      teamOpp = List(),
       houseWon = None,
       error = CommandNoError)
     

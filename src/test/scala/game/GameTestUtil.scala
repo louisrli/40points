@@ -24,9 +24,8 @@ object GameTestUtil {
       firstPlayer = 0,
       currentTurn = 0,
       phase = HouseSelection,
-      pendingCalledCards = List(),
+      roundWinner = None,
       teamHouse = List(),
-      teamOpp = List(),
       houseWon = None,
       error = CommandNoError)
   }

@@ -88,7 +88,7 @@ object FortyPointsGame {
       }
       /* Epilogue */
       case (CountPoints, _) =>
-        val oppPoints = PointUtil.tallyTeamPoints(state.teamOpp)
+        val oppPoints = PointUtil.tallyTeamPoints(state.players.toList diff state.teamHouse)
         state.copy(
           houseWon = Some(oppPoints > state.pointThreshold),
           phase = GameEnd)

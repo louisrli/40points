@@ -19,21 +19,23 @@ import com.louis.fortypoints.game.command._
  *  Index of the house player.
  * @param deck
  *  The current deck of cards. After dealing, this will be the bottom cards.
+ *
+ * @param firstPlayer
+ *  Index of the player that played first in a given round
  * @param currentTurn
  *  Index of player with current turn.
  * @param phase 
  *  [[com.louis.fortypoints.game.GamePhase]] representing the current
  *  stage of the game.
  *
- * @param pendingCalledCards
- *  List of cards called by the house
  * @param teamHouse
  *  List of players on the house team
- * @param teamOpp
- *  List of players on the opposing team. Should initially be all non-house members,
- *  changing as called cards are played.
  * @param houseWon
  *  An option representing whether the house team won. None if the game is not over yet.
+ *
+ * @param error
+ *  CommandNoError if the round proceeded without an error. Otherwise, an instance of
+ *  [[com.louis.fortypoints.game.command.CommandErrorStatus]].
  */
 case class GameState(
   /* Properties determined at prologue */
@@ -45,14 +47,13 @@ case class GameState(
   deck: Deck,
 
   /* Properties determined as game progresses */
+  phase: GamePhase,
   firstPlayer: Int,
   currentTurn: Int,
-  phase: GamePhase,
+  roundWinner: Option[(Int, Play)],
 
   /* Properties related to teams */
-  pendingCalledCards: List[Card],
   teamHouse: Team,
-  teamOpp: Team,
   houseWon: Option[Boolean],
 
   error: CommandErrorStatus
