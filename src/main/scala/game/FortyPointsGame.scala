@@ -20,7 +20,8 @@ object FortyPointsGame {
       /* Prologue */
       case (HouseSelection, _) => {
         // TODO(louisli): implement a method for house selection
-        state.copy(house = 0, phase = HandDrawing)
+        state.copy(house = 0, phase = HandDrawing, 
+          teamHouse = List(0, 1))
       }
       case (HandDrawing, _) => {
         /* 1. Check if no more cards need to be drawn
@@ -70,49 +71,50 @@ object FortyPointsGame {
         /* 1. Gather the players plays and determine the winner
          * 2. Give any point cards to the winning player
          * 3. Clear hands */
-        require(state.getPlays.size == state.players.size)  // TODO(legit check)
-        // TODO: should check that all people have the same number of cards
         val pu = new PlayUtil(state.trumpRank, state.trumpSuit.get)
         val winningPlay = pu.determineWinner(state.getPlays flatMap { (s) => s } toList)
         val winner = state.getPlaysFlat.indexOf(winningPlay)
-        // TODO should check that this is never -1
-        if (state.currentPlayer.hand.size > 0)
-          state.clearPlays.copy(
+
+        // Defensively perform checks to make sure we're not in inconsistent state
+        if (winner == - 1)
+          state.copy(error = CommandInvalidConfig("Round end -- couldn't find the winning play"))
+        else if (state.getPlays.size != state.players.size) {
+          state.copy(error = CommandInvalidConfig(
+            "Round end -- number of plays != number of players"))
+        }
+        else if (!state.players.forall { _.hand.size == state.currentPlayer.hand.size }) {
+          state.copy(error = CommandInvalidConfig(
+            "Round end -- not all players had the same number of cards"))
+        }
+        else if (state.currentPlayer.hand.size > 0) {
+          // Start another round
+          collectPoints(state, winner).clearPlays.copy(
             currentTurn = winner, 
             roundWinner = Some(winner, winningPlay), 
             phase = RoundFirstTurn)
+        }
         else
           state.copy(phase = CountPoints, roundWinner = Some(winner, winningPlay))
       }
       /* Epilogue */
       case (CountPoints, _) =>
-        val oppPoints = PointUtil.tallyTeamPoints(state.teamOpp)
+        val oppPoints = PointUtil.tallyTeamPoints(state.teamOppPlayers)
         state.copy(
           houseWon = Some((oppPoints > state.pointThreshold, oppPoints)),
           phase = GameEnd)
       case (GameEnd, _) =>
         /* IDK. Notify people that we done. */
-        state
+        state.copy(phase = GameQuit)
       case (_, BlankCommand) => state
       case (_, _) => state  // TODO log a warning or something
     }
   }
 
-
   /**
-   * For commands that deal with the current player, check if the player
-   * sending the command is the current player.
-   *
-   * If it's the wrong player, we just ignore it (this shouldn't be
-   * allowed client-side).
-   *
-   * TODO: Log a warning.
+   * Give all point cards in a round to the specified player
    */
-  private def check(p: Int, s: GameState) = p == s.currentTurn
-  private def checkPlayer(state: GameState): Command => Boolean = {
-    case SetTrump(p, c) => check(p, state)
-    case HouseFilterBottomCards(p, c) => check(p, state)
-    case MakePlay(p, c) => check(p, state)
-    case _ => true
+  private def collectPoints(s: GameState, p: Int): GameState = {
+    val points = s.getPlays flatMap (_.get.cards) filter PointUtil.isPoint
+    s.updatePlayer(p, s.players(p).addPointCards(points.toList))
   }
 }

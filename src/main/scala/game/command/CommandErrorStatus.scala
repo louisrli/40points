@@ -24,6 +24,7 @@ case object CommandInvalidPlayer extends CommandErrorStatus
  * Generic error for a command received in the wrong phase
  */
 case object CommandInvalidConfig extends CommandErrorStatus
+case class CommandInvalidConfig(msg: String) extends CommandErrorStatus
 
 case object CommandNoError extends CommandErrorStatus
 
@@ -52,7 +53,9 @@ object CommandErrorStatus {
     case CommandInvalidPlayer =>
       "It is not your turn right now (this shouldn't happen)."
     case CommandInvalidConfig =>
-      "Found an invalid game configuration (this shouldn't happen)."
+      "Found an invalid game configuration (this shouldn't happen)"
+    case CommandInvalidConfig(msg) =>
+      "Found an invalid game configuration: %s (this shouldn't happen)".format(msg)
     case CommandNoError => ""
   }
 }

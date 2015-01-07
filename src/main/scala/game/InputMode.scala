@@ -22,8 +22,6 @@ object InputMode {
       // TODO(louisli) change back
       case HouseBottomFilter => RequestInput("Select the cards to put on the bottom")
       case RoundFirstTurn | RoundOtherTurn => RequestInput("Select cards to play")
-      case RoundEnd => NoInput
-      case CountPoints => NoInput
-      case GameEnd => NoInput
+      case RoundEnd | CountPoints | GameEnd | GameQuit => NoInput
   }
 }

@@ -63,6 +63,14 @@ object MonadUtil {
     liftState[CommandErrorStatus] { (s: GameState) => (s, s.error) }
   }
 
+  
+  /**
+   * Lifted function for checking if the game is over
+   */
+  def gameOverM: Game[Boolean] = {
+    liftState[Boolean] { (s: GameState) => (s, s.phase == GameQuit) }
+  }
+
   def unitM: Game[Unit] = liftIO(IO.ioUnit)
 
   //
@@ -95,6 +103,5 @@ object MonadUtil {
   def getPrePhaseDisplayM: Game[String] = {
     liftState[String] { (s: GameState) => (s, ConsoleUtil.getPrePhaseDisplay(s)) }
   }
-
 }
 

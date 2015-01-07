@@ -43,13 +43,13 @@ case class Player(
   }
 
   /**
-   * Returns a new Player with the added point card
+   * Returns a new Player with the added point cards
    *
-   * Throws an exception if the card parameter is not a point card.
+   * Throws an exception if a card is not a point card.
    */
-  def addPointCard(card: Card): Player = {
-    require(PointUtil.isPoint(card))
-    this.copy(points = card :: this.points)
+  def addPointCards(cards: List[Card]): Player = {
+    require(cards forall (PointUtil.isPoint(_)))
+    this.copy(points = cards ++ this.points)
   }
 
   def setPlay(p: Play): Player = {

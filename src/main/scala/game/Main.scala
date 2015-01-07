@@ -16,14 +16,19 @@ object Main {
    * Recursively defined main loop for the Game monad
    */
   private def mainLoop: Game[Unit] = for {
+    // Check if the game has ended
+    ended <- gameOverM
+    _ <- if (ended) sys.exit(0) else unitM
     gameMode <- getInputModeM
+    // Print headers at the beginning of the game phase
     prePhaseDisplay <- getPrePhaseDisplayM
     _ <- putStrLnM(prePhaseDisplay)
-    // Only request user input if this game mode needs user input
+
+    // Request user input if needed
     _ <- gameMode match {
       case RequestInput(prompt) => {
         for {
-          // Print out an error if there was one
+          // Print out an error if exists
           error <- getErrorM
           _ <- if (error == CommandNoError) 
                 unitM 

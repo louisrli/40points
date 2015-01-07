@@ -55,7 +55,7 @@ case class GameState(
   roundWinner: Option[(Int, Play)],
 
   /* Properties related to teams */
-  teamHouse: Team,
+  teamHouse: List[Int],
   houseWon: Option[(Boolean, Int)],
 
   error: CommandErrorStatus
@@ -136,9 +136,23 @@ case class GameState(
   }
 
   /**
-   * Get the opposing team (anyone not on the house team)
+   * Get the opposing team's player indices
    */
-  def teamOpp: Team = {
-    players.toList diff teamHouse
+  def teamOpp: List[Int] = {
+    (0 until players.size).toList diff teamHouse
+  }
+
+  /**
+   * Get the opposing team's players
+   */
+  def teamOppPlayers: Team = {
+    players.toList diff teamHousePlayers
+  }
+
+  /**
+   * Get the house team's players
+   */
+  def teamHousePlayers: Team = {
+    teamHouse map (players(_))
   }
 }

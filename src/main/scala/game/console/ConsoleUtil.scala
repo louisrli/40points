@@ -33,17 +33,19 @@ object ConsoleUtil {
       case HouseBottomFilter => 
         mkLines("Bottom cards: " + (state.deck.cards mkString " "), currentHand)
       case RoundFirstTurn | RoundOtherTurn => {
-        mkLines(currentHand, "Board: " + (state.getPlays mkString " "), winner)
+        mkLines(winner, currentHand, "Board: " + (state.getPlays mkString " "))
       }
       case RoundEnd => "Computing the winner..."
       case CountPoints => mkLines(winner, "[UNIMPLEMENTED] Count points")
       case GameEnd => {
         val (houseWon, oppPoints) = state.houseWon.get
         val (winStr, winPlayers) = if (houseWon) ("House", state.teamHouse) else ("Opposition", state.teamOpp)
+        val playerNums = winPlayers map (state.players.indexOf(_))
         mkLines(
           "The game has ended. The opposition collected %d/%d points".format(oppPoints, state.pointThreshold), 
-          "%s team won (Players %s)".format(winStr, winPlayers mkString "&"))
+          "%s team won (Players %s)".format(winStr, playerNums mkString " & "))
       }
+      case GameQuit => ""
     }
   }
 

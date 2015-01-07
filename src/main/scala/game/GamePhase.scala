@@ -21,4 +21,5 @@ case object RoundEnd extends GamePhase
 /* Epilogue */
 case object CountPoints extends GamePhase
 case object GameEnd extends GamePhase
+case object GameQuit extends GamePhase
 
