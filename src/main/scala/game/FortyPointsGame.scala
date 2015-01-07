@@ -20,7 +20,7 @@ object FortyPointsGame {
       /* Prologue */
       case (HouseSelection, _) => {
         // TODO(louisli): implement a method for house selection
-        state.copy(house = Some(0), phase = HandDrawing)
+        state.copy(house = 0, phase = HandDrawing)
       }
       case (HandDrawing, _) => {
         /* 1. Check if no more cards need to be drawn
@@ -28,7 +28,7 @@ object FortyPointsGame {
          * 3. While drawing, players can play trumps (TODO) */
         val NumBottomCards = 4 // TODO(louisli): calculate the correct number of bottom cards
         if (state.deck.size == NumBottomCards)
-          state.copy(phase = HouseBottomFilter, currentTurn = state.house.get)
+          state.copy(phase = HouseBottomFilter, currentTurn = state.house)
         else {
           // Draw a card for the current player, then update the game phase
           val (card, rest) = state.deck.draw

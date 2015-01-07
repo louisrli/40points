@@ -16,7 +16,7 @@ import com.louis.fortypoints.game.command._
  * @param trumpRank
  *  Current trump rank.
  * @param house
- *  Option of index of house player. Will be None before it is determined.
+ *  Index of the house player.
  * @param deck
  *  The current deck of cards. After dealing, this will be the bottom cards.
  * @param currentTurn
@@ -41,7 +41,7 @@ case class GameState(
   pointThreshold: Int,
   trumpSuit: Option[Suit.Value],
   trumpRank: Rank.Value,
-  house: Option[Int],
+  house: Int,
   deck: Deck,
 
   /* Properties determined as game progresses */

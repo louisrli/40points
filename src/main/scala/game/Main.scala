@@ -70,7 +70,7 @@ object Main {
       pointThreshold = 10,
       trumpSuit = Some(Suit.Spade),
       trumpRank = Rank.Two,
-      house = None,
+      house = 0,
       deck = Deck.getStandardDeckJoker,
       firstPlayer = 0,
       currentTurn = 0,

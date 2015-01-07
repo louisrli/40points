@@ -38,14 +38,11 @@ case class SetTrump(player: Int, cards: List[Card]) extends Command {
 case class HouseFilterBottomCards(player: Int, cards: List[Card]) extends Command {
   override def exec(state: GameState): GameState = {
     state.house match {
-      case None =>  // This case should never really happen
-        // TODO(louisli) log a warning?
-        state.copy(error = CommandInvalidConfig, currentTurn = 0, phase = RoundFirstTurn)
-      case Some(house) if house != player => 
+      case house if house != player => 
         state.copy(error = CommandInvalidPlayer)
-      case Some(house) if cards.size != state.numBottomCards => 
+      case house if cards.size != state.numBottomCards => 
         state.copy(error = CommandBottomWrongArity(cards.size, state.numBottomCards))
-      case Some(house) => {
+      case house => {
         // Check that all the cards are either in the bottom or in his hand
         val validCards = cards filter { 
           (c) => state.deck.cards.contains(c) || state.currentPlayer.hand.contains(c) 

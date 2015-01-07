@@ -19,7 +19,7 @@ object GameTestUtil {
       pointThreshold = 10,
       trumpSuit = None,
       trumpRank = Rank.Two,
-      house = None,
+      house = 0,
       deck = Deck.getStandardDeckJoker,
       firstPlayer = 0,
       currentTurn = 0,
