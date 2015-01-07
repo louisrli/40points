@@ -18,7 +18,7 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
    *         otherwise a [[com.louis.fortypoints.game.play.PlayValidationError]] 
    *         with a description of the error.
    */
-  def validateFirstPlay(play: Play) : Option[PlayValidationError] = {
+  def validateFirstPlay(play: Play): Option[PlayValidationError] = {
     // TODO: Do something with trump suit?
     None
   }
@@ -38,7 +38,7 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
   def validateOtherPlay(
     play: Play, 
     hand: Hand,
-    firstPlay: Play) : Option[PlayValidationError] = {
+    firstPlay: Play): Option[PlayValidationError] = {
     if (play.cards.size != firstPlay.cards.size)
       Some(SizeError(firstPlay.cards.size, play.cards.size))
     else
@@ -73,7 +73,7 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
    * @param first The first play of the round
    * @return Either p1 or p2, the winning play
    */
-  def compareRank(p1: Play, p2: Play, first: Play) : Play = {
+  def compareRank(p1: Play, p2: Play, first: Play): Play = {
     (p1.rank, p2.rank, first.rank) match {
       case (Single(c1), Single(c2), Single(f)) =>
         // Return the play of higher rank (same suits)
@@ -123,7 +123,7 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
   /**
    * Compare card ranks, specific for 40 points (ace is the highest)
    */
-  private def lt(r1: Rank.Value, r2: Rank.Value) : Boolean = {
+  private def lt(r1: Rank.Value, r2: Rank.Value): Boolean = {
     // Search RankOrder for the first match. This linear in size of a constant list.
     // Could be slightly improved if we want.
     val (i, j) = (RankOrder.indexOf(r1), RankOrder.indexOf(r2))
@@ -138,28 +138,28 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
    *              The order is important, since the first play is used
    *              in determining the winning play.
    */
-  def determineWinner(plays: List[Play]) : Play = {
+  def determineWinner(plays: List[Play]): Play = {
     plays.foldLeft(plays.head)(compareRank(_, _, plays.head))
   }
 
   /**
    * Returns true if the hand has a nontrump card of the given suit.
    */
-  def hasNonTrump(hand: Hand, suit: Suit.Value) : Boolean = {
+  def hasNonTrump(hand: Hand, suit: Suit.Value): Boolean = {
     hand exists (c => !isTrump(c) && c.suit == suit)
   }
 
   /**
    * Returns true if the hand has any trump cards
    */
-  def hasTrump(hand: Hand) : Boolean = {
+  def hasTrump(hand: Hand): Boolean = {
     hand exists isTrump
   }
 
   /**
    * Returns true if the card is a trump card.
    */
-  def isTrump(card: Card) : Boolean = {
+  def isTrump(card: Card): Boolean = {
     card match {
       case Card.LittleJoker | Card.BigJoker =>
         true
@@ -170,6 +170,36 @@ case class PlayUtil(trumpRank: Rank.Value, trumpSuit: Suit.Value) {
     }
   }
 
+  val SuitOrder = Vector(Suit.Diamond, Suit.Club, Suit.Heart, Suit.Spade)
+
+  /**
+   * Sorts a hand according to a sensible ordering:
+   * Trumps on left, with other suits alternating in color
+   */
+  def sort(hand: Hand): Hand = {
+    val trump = "Trump"
+    val f: Card => String = { 
+      case c if isTrump(c) => trump
+      case c => c.suit.toString
+    }
+
+    // Partition the hand by trumps and suit, then sort within each one
+    val partitions: Map[String, Hand] = hand.groupBy(f)
+    val cmp: (Card, Card) => Boolean = (c1, c2) => lt(c1.rank, c2.rank)
+
+    val sorted = partitions mapValues (_.sortWith(cmp)) withDefaultValue(Nil)
+    
+    // Construct the hand with the trumps on the left side, cycling around
+    // on our pre-specified suit order
+    val start = SuitOrder.indexOf(trumpSuit)
+    (0 until SuitOrder.size).toList flatMap { i =>
+      val j = (start + i) % SuitOrder.size
+      if (i == 0) 
+        sorted(trump) 
+      else 
+        sorted(SuitOrder(j).toString)
+    }
+  }
 }
 
 object PlayUtil {
@@ -179,7 +209,7 @@ object PlayUtil {
    *
    * @return An instance of [[com.louis.fortypoints.game.play.PlayRank]]
    */
-  def determineRank(cards: List[Card]) : PlayRank = {
+  def determineRank(cards: List[Card]): PlayRank = {
     cards.size match {
       case 1 => Single(cards.head)
       // TODO(louisli): Support other types of hands

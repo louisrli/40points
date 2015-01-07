@@ -207,5 +207,26 @@ class PlayUtilSpec extends UnitSpec with BeforeAndAfter {
     playUtil.validateOtherPlay(p2, hasTrumpHand, firstPlay) shouldBe None
   }
 
+  "Default sort" should "sort hands correctly" in {
+    // Assuming trump is 2h
+    val h1 = Card.toHand("As", "6s", "2d", "Big Joker", "4d", "5c", "6c", "Ah")
+    val e1 = Card.toHand("Ah", "2d", "Big Joker", "6s", "As", "4d", "5c", "6c")
+    playUtil.sort(h1) shouldBe e1
+
+    // no trumps
+    val h2 = Card.toHand("As", "5c", "4c", "3d", "8c", "Ad", "3s")
+    val e2 = Card.toHand("3s", "As", "3d", "Ad", "4c", "5c", "8c")
+    playUtil.sort(h2) shouldBe e2
+
+    val h3 = Card.toHand("As", "2s", "3d", "4d", "Kd")
+    val e3 = Card.toHand("2s", "As", "3d", "4d", "Kd")
+    playUtil.sort(h3) shouldBe e3
+
+    playUtil.sort(Nil) shouldBe Nil
+
+    val h5 = Card.toHand("2h")
+    playUtil.sort(h5) shouldBe h5
+  }
+
 }
 
