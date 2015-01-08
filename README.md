@@ -31,9 +31,9 @@ Packages
 ├── main
     └── scala
         ├── card -- self contained playing card library
-        └── game -- core game logic, game and monad utilities
+        └── game -- core game logic
             ├── command -- handle user input and error statuses via command pattern
-            ├── console -- things for the terminal-version only
+            ├── console -- things for the terminal-version only (monads, terminal output)
             └── play -- computing things related to hand strengths
 ```
 
