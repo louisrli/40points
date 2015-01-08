@@ -40,6 +40,8 @@ object GameTestUtil {
       deck = rest)
   }
 
+  val dealtTrumpState: GameState = dealtState.copy(trumpSuit = Some(Suit.Spade))
+
   /**
    * Return an instance of Play (when we don't care about the actual play)
    */
